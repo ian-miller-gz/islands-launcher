@@ -50,6 +50,11 @@ static const Click CLICKS[] = {
      GUI::set(
        LAUNCHER::document, LAUNCHER::IDS::SETUP,
        GUI::Visibility{!LAUNCHER::GET::setting()});
+   }},
+  {LAUNCHER::IDS::JOIN,
+   [] {
+     LAUNCHER::STORE::link(
+       String(GUI::GET::text(LAUNCHER::document, LAUNCHER::IDS::LINK)));
    }}};
 
 static void act(const String &id) {
@@ -94,6 +99,7 @@ void LAUNCHER::update() {
   reap();
   WATCH::poll();
   STORE::poll();
+  STORE::reach();
   const GFX::Viewport viewport = GFX::WINDOWS::MAIN::viewport();
   GUI::place(document, viewport);
   if (!prompt(viewport)) {

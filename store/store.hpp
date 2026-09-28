@@ -12,11 +12,17 @@ struct Offer {
   String leaf;
   String state;
   Flag installed = false;
+  Flag linked = false;
 };
 
 constexpr Whole ROWS = 8;
 constexpr STRING::Hot LIST = "cartridges/.core/launcher/assets/store.yaml";
 constexpr STRING::Hot STAGING = "cartridges/.store";
+constexpr STRING::Hot LINKS = "configs/links.yaml";
+constexpr STRING::Hot LINKED = "links";
+constexpr STRING::Hot SUFFIX = ".git";
+constexpr STRING::Hot PROBE = "git ls-remote --exit-code ";
+constexpr STRING::Hot HEAD = " HEAD";
 constexpr STRING::Hot REPOSITORY = "repository";
 constexpr STRING::Hot DESCRIBED = "description";
 constexpr STRING::Hot RELEASED = "release";
@@ -33,6 +39,8 @@ constexpr STRING::Hot UNREACHED = "unreached";
 constexpr STRING::Hot REFUSED = "refused";
 constexpr STRING::Hot FAILED = "failed";
 constexpr STRING::Hot REPORTING = "reporting";
+constexpr STRING::Hot REACHING = "reaching";
+constexpr STRING::Hot FULL = "full";
 constexpr STRING::Hot VERIFYING = "verifying";
 constexpr STRING::Hot FETCHING = "fetching";
 constexpr STRING::Hot CHECKING = "checking";
@@ -56,6 +64,8 @@ auto report(Offer &offer) -> Flag;
 auto verify(Offer &offer) -> Flag;
 void install(Whole row);
 void poll();
+void reach();
+void link(const String &repository);
 void remove(Whole row);
 void call(Whole row);
 void installed(Offer &offer);
@@ -67,5 +77,7 @@ auto home() -> String;
 auto leaf(const String &repository) -> String;
 auto steps() -> const Vector<Step> &;
 auto progress() -> Float;
+auto links() -> Vector<String>;
+auto staging(const Offer &offer) -> String;
 }  // namespace GET
 }  // namespace LAUNCHER::STORE
