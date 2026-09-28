@@ -88,4 +88,6 @@ void LAUNCHER::STORE::survey() {
 
 auto LAUNCHER::STORE::GET::staging(const Offer &offer) -> String {
   return LAUNCHER::STORE::staging(offer);
+  for (Offer &offer : offers)
+    if (report(offer)) verify(offer);
 }

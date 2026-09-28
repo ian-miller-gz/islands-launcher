@@ -56,6 +56,13 @@ auto LAUNCHER::STORE::keep(const String &text) -> Flag {
   for (const Offer &offer : offers)
     if (offer.repository == repository) return true;
   if (offers.size() >= ROWS) return false;
+void LAUNCHER::STORE::link(const String &text) {
+  const String repository = trimmed(text);
+  GUI::set(document, IDS::LINK, GUI::Text{String()});
+  if (repository.empty()) return;
+  for (const Offer &offer : offers)
+    if (offer.repository == repository) return note("");
+  if (offers.size() >= ROWS) return note(FULL);
   Vector<String> links = GET::links();
   links.push_back(repository);
   write(links);
@@ -75,4 +82,5 @@ void LAUNCHER::STORE::link(const String &text) {
 void LAUNCHER::STORE::argued() {
   const Vector<String> &words = CARTRIDGE::GET::arguments();
   if (words.size() == 2 && words[0] == WORD) keep(words[1]);
+  note("");
 }
