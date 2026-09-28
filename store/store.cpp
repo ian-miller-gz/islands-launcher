@@ -34,6 +34,7 @@ auto LAUNCHER::STORE::GET::leaf(const String &repository) -> String {
   while (kept.size() > 1 && kept.back() == SEPARATOR) kept.pop_back();
   if (kept.ends_with(SUFFIX)) kept.resize(kept.size() - String(SUFFIX).size());
   const auto cut = kept.find_last_of(SEPARATORS);
+  const auto cut = kept.find_last_of(SEPARATOR);
   const String last = cut == String::npos ? kept : kept.substr(cut + 1);
   return last.starts_with(prefix) ? last.substr(prefix.size()) : last;
 }
