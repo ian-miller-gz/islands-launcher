@@ -50,6 +50,12 @@ auto LAUNCHER::STORE::GET::links() -> Vector<String> {
   return links;
 }
 
+auto LAUNCHER::STORE::keep(const String &text) -> Flag {
+  const String repository = trimmed(text);
+  if (repository.empty()) return true;
+  for (const Offer &offer : offers)
+    if (offer.repository == repository) return true;
+  if (offers.size() >= ROWS) return false;
 void LAUNCHER::STORE::link(const String &text) {
   const String repository = trimmed(text);
   GUI::set(document, IDS::LINK, GUI::Text{String()});
@@ -65,5 +71,16 @@ void LAUNCHER::STORE::link(const String &text) {
      .leaf = GET::leaf(repository),
      .state = REACHING,
      .linked = true});
+  return true;
+}
+
+void LAUNCHER::STORE::link(const String &text) {
+  GUI::set(document, IDS::LINK, GUI::Text{String()});
+  note(keep(text) ? "" : FULL);
+}
+
+void LAUNCHER::STORE::argued() {
+  const Vector<String> &words = CARTRIDGE::GET::arguments();
+  if (words.size() == 2 && words[0] == WORD) keep(words[1]);
   note("");
 }
