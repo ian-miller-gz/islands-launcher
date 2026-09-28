@@ -3,7 +3,7 @@
 
 #include <cartridge.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 namespace fs = std::filesystem;
 using LAUNCHER::STORE::Offer;
@@ -28,6 +28,9 @@ auto quiet(const Offer &) -> String { return {}; }
 auto ended(Offer &) -> Flag { return true; }
 
 auto cloning(const Offer &offer) -> String {
+  std::error_code stood;
+  if (offer.linked && fs::exists(fs::path(staging(offer)) / SOURCE, stood))
+    return {};
   const String home = SHELL::OS::quote(staging(offer));
   return String(SWEEP) + home + " && " + CLONE +
          SHELL::OS::quote(offer.repository) + " " + home;

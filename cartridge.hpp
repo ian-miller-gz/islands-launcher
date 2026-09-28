@@ -89,8 +89,7 @@ auto bare(const String &line) -> String;
 }  // namespace GET
 }  // namespace LAUNCHER
 
-#include "state.ids.hpp"
-#include "state.layout.hpp"
-#include "state.watch.hpp"
-#include "state.idle.hpp"
+#include "layout.hpp"
+#include "watch.hpp"
+#include "idle.hpp"
 #include "store.hpp"

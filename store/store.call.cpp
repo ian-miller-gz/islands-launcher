@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <filesystem>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 namespace fs = std::filesystem;
 

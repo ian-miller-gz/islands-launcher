@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "monitor/monitor.hpp"
+#include "../monitor/monitor.hpp"
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 static const String BEGIN = "begin\n";
 static const String END = "end\n";

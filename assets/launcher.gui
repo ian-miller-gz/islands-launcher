@@ -136,6 +136,9 @@ panel shell style=clear anchor=stretch
       label state7 style=muted size=17 x=700 y=328 visible=false
       button install7 style=place size=17 text="Install" x=836 y=323 w=120 h=28 visible=false
       bar progress7 style=gauge x=700 y=354 w=256 h=4 fraction=0 visible=false
+      field link style=leaf size=17 pad=6 x=16 y=380 w=660 h=28
+      label linkstate style=muted size=17 x=700 y=386
+      button linkadd style=place size=17 text="Add" x=836 y=380 w=120 h=28
   button notice style=card anchor=center w=360 h=120 z=10 visible=false
     label noticeline style=ink size=18 text="" x=24 y=24
     button noticeclose style=place size=18 text="Close" anchor=southeast x=-24 y=-24 w=150 h=34
