@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <cartridge/requirements.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 static auto facts(const LAUNCHER::Entry &entry) -> Vector<String> {
   Vector<String> lines;
