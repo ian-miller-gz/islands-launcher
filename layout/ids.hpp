@@ -45,6 +45,9 @@ constexpr STRING::Hot DETAIL = "description";
 constexpr STRING::Hot INSTALL = "install";
 constexpr STRING::Hot STANDING = "state";
 constexpr STRING::Hot PROGRESS = "progress";
+constexpr STRING::Hot LINK = "link";
+constexpr STRING::Hot JOIN = "linkadd";
+constexpr STRING::Hot LINKED = "linkstate";
 inline auto cell(STRING::Hot column, Whole at) -> String {
   return String(column) + std::to_string(at);
 }

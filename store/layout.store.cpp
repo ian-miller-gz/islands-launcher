@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 namespace LAUNCHER::STORE {
 namespace {

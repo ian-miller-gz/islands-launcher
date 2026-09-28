@@ -3,13 +3,20 @@
 
 #include <cartridge.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 namespace fs = std::filesystem;
 
 namespace LAUNCHER::STORE {
 namespace {
 constexpr Char SEPARATOR = '/';
+constexpr STRING::Hot SEPARATORS = "/:";
+
+auto listed(const String &repository) -> Flag {
+  for (const Offer &offer : offers)
+    if (offer.repository == repository) return true;
+  return false;
+}
 }  // namespace
 }  // namespace LAUNCHER::STORE
 
@@ -25,7 +32,8 @@ auto LAUNCHER::STORE::GET::leaf(const String &repository) -> String {
   const String prefix = PREFIX;
   String kept = repository;
   while (kept.size() > 1 && kept.back() == SEPARATOR) kept.pop_back();
-  const auto cut = kept.find_last_of(SEPARATOR);
+  if (kept.ends_with(SUFFIX)) kept.resize(kept.size() - String(SUFFIX).size());
+  const auto cut = kept.find_last_of(SEPARATORS);
   const String last = cut == String::npos ? kept : kept.substr(cut + 1);
   return last.starts_with(prefix) ? last.substr(prefix.size()) : last;
 }
@@ -43,6 +51,11 @@ void LAUNCHER::STORE::load() {
       continue;
     }
     if (key == DESCRIBED && !offers.empty()) offers.back().description = value;
+  }
+  for (const String &link : GET::links()) {
+    if (offers.size() >= ROWS || listed(link)) continue;
+    offers.push_back(
+      {.repository = link, .leaf = GET::leaf(link), .linked = true});
   }
 }
 

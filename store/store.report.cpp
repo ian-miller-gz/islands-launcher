@@ -3,7 +3,7 @@
 
 #include <cartridge.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 namespace fs = std::filesystem;
 using LAUNCHER::STORE::Offer;
@@ -42,6 +42,9 @@ auto staging(const Offer &offer) -> String {
 auto LAUNCHER::STORE::report(Offer &offer) -> Flag {
   String text;
   offer.state.clear();
+  std::error_code reached;
+  if (offer.linked)
+    return fs::exists(fs::path(staging(offer)) / LAUNCHER::MANIFEST, reached);
   if (!fetched(offer, text)) {
     offer.state = UNREACHED;
     return false;
@@ -74,6 +77,15 @@ void LAUNCHER::STORE::survey() {
   if (surveyed) return;
   surveyed = true;
   load();
-  for (Offer &offer : offers)
+  for (Offer &offer : offers) {
+    if (offer.linked) {
+      offer.state = REACHING;
+      continue;
+    }
     if (report(offer)) verify(offer);
+  }
+}
+
+auto LAUNCHER::STORE::GET::staging(const Offer &offer) -> String {
+  return LAUNCHER::STORE::staging(offer);
 }
