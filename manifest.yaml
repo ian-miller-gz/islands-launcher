@@ -16,3 +16,4 @@ platforms:
   windows:
     entry: liblauncher.dll
 console: false
+release: 0.1.0

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <island/gui/dialog.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 auto LAUNCHER::prompt(GFX::Viewport viewport) -> Flag {
   if (!GUI::DIALOG::GET::active()) return false;

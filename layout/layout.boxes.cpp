@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <island/graphics/text/text.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 static auto columns(const String &label, Float until) -> Whole {
   const Float size = GUI::GET::size(LAUNCHER::document, label.c_str());

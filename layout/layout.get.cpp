@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <island/graphics/text/text.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 auto LAUNCHER::GET::columns(Whole depth) -> Whole {
   const Float size = GUI::GET::style(document, STYLES::LEAF).size;

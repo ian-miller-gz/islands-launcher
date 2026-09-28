@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <cartridge/relations.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 auto LAUNCHER::launch(const Entry &entry, pid_t leader) -> pid_t {
   const auto child = RELATIONS::spawn(ISLAND_NAME, entry.directory);

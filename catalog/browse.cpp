@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 static auto subtree(const Vector<LAUNCHER::Entry> &rows, Whole entry) -> Whole {
   const Whole depth = rows[entry].depth;
