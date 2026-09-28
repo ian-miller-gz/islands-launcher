@@ -5,7 +5,7 @@
 #include <island/input.hpp>
 #include <island/window/backend.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 static auto banked(const String &id, STRING::Hot bank, Whole &at) -> Flag {
   const String prefix = bank;

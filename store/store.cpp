@@ -3,7 +3,7 @@
 
 #include <cartridge.hpp>
 
-#include "state.hpp"
+#include "../cartridge.hpp"
 
 namespace fs = std::filesystem;
 
