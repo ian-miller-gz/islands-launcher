@@ -1,6 +1,6 @@
 
 style=assets/islands.gui
-style=cartridges/.core/launcher/assets/styles.gui
+style=styles.gui
 
 panel shell style=clear anchor=stretch
   panel rail style=sheet anchor=top|bottom x=16 y=40 w=272 h=16
