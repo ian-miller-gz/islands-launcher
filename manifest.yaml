@@ -5,7 +5,7 @@ splash: true
 size: 1280x800
 assets: assets
 version: 3
-release: 0.1.4
+release: 0.2.0
 summary: islands launcher
 web: https to raw.githubusercontent.com
 engine:
