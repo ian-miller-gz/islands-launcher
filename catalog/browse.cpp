@@ -38,7 +38,7 @@ void LAUNCHER::open(Whole entry) {
 void LAUNCHER::visit(STRING::Hot area) {
   for (const Area &known : AREAS) {
     if (String(known.id) != area) continue;
-    location = known.directory;
+    location = GET::area(known);
     scan();
     return;
   }

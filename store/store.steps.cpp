@@ -14,7 +14,7 @@ constexpr STRING::Hot SOURCE = "cartridge.cpp";
 constexpr STRING::Hot BUILD = "bash cartridges/build.sh ";
 
 auto staging(const Offer &offer) -> String {
-  return (fs::path(LAUNCHER::STORE::STAGING) / offer.leaf).string();
+  return (fs::path(LAUNCHER::STORE::GET::stage()) / offer.leaf).string();
 }
 
 auto placed(const Offer &offer) -> String {

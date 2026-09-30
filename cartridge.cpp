@@ -5,6 +5,7 @@ static auto initialize(STRING::Hot assets) -> Status {
   LAUNCHER::document = GUI::mount(assets, LAUNCHER::LAYOUT);
   if (LAUNCHER::document == GUI::NONE) return 1;
   LAUNCHER::LINE::read();
+  LAUNCHER::location = LAUNCHER::STORE::GET::home();
   LAUNCHER::IDLE::create();
   LAUNCHER::scan();
   LAUNCHER::STORE::argued();

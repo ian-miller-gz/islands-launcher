@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <common.hpp>
 #include <filesystem>
 
 #include <cartridge.hpp>
@@ -28,7 +29,13 @@ auto LAUNCHER::STORE::GET::list() -> String {
 }
 
 auto LAUNCHER::STORE::GET::home() -> String {
-  return String(HOME);
+  if (COMMON::STATE == COMMON::HOME) return String(HOME);
+  return (fs::path(COMMON::STATE) / HOME).string();
+}
+
+auto LAUNCHER::STORE::GET::stage() -> String {
+  if (COMMON::STATE == COMMON::HOME) return String(STAGING);
+  return (fs::path(COMMON::STATE) / STAGING).string();
 }
 
 auto LAUNCHER::STORE::GET::leaf(const String &repository) -> String {

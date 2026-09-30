@@ -83,7 +83,7 @@ void LAUNCHER::TOOLBAR::refresh() {
     GUI::set(
       document, area.id,
       GUI::Style{
-        location == area.directory ? STYLES::SELECTED : STYLES::PLACE});
+        location == GET::area(area) ? STYLES::SELECTED : STYLES::PLACE});
 }
 
 void LAUNCHER::FOOTER::refresh() {

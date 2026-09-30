@@ -80,6 +80,7 @@ void refresh();
 namespace GET {
 auto list() -> String;
 auto home() -> String;
+auto stage() -> String;
 auto leaf(const String &repository) -> String;
 auto steps() -> const Vector<Step> &;
 auto running() -> Flag;

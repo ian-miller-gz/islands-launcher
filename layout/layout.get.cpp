@@ -51,3 +51,8 @@ auto LAUNCHER::GET::shortened(const String &text, Whole columns) -> String {
   if (columns <= CUT) return run.substr(0, columns);
   return run.substr(0, columns - CUT) + MARK;
 }
+
+auto LAUNCHER::GET::area(const Area &area) -> String {
+  const String directory = area.directory;
+  return directory == HOME ? STORE::GET::home() : directory;
+}

@@ -60,6 +60,7 @@ void span(STRING::Hot id, Float y, Float h);
 
 namespace GET {
 auto columns(Whole depth) -> Whole;
+auto area(const Area &area) -> String;
 auto noticing() -> Flag;
 auto setting() -> Flag;
 auto picked() -> Whole;

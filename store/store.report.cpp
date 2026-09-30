@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <filesystem>
+#include <logger.hpp>
 
 #include <cartridge.hpp>
 
@@ -10,6 +11,7 @@ using LAUNCHER::STORE::Offer;
 
 namespace LAUNCHER::STORE {
 namespace {
+constexpr STRING::Hot CATEGORY = "~/launcher/store";
 
 auto address(const String &repository, const String &revision) -> String {
   namespace STORE = LAUNCHER::STORE;
@@ -37,7 +39,7 @@ auto fetched(const Offer &offer, String &report) -> Flag {
 }
 
 auto staging(const Offer &offer) -> String {
-  return (fs::path(LAUNCHER::STORE::STAGING) / offer.leaf).string();
+  return (fs::path(LAUNCHER::STORE::GET::stage()) / offer.leaf).string();
 }
 }  // namespace
 }  // namespace LAUNCHER::STORE
@@ -57,6 +59,10 @@ auto LAUNCHER::STORE::report(Offer &offer) -> Flag {
   fs::create_directories(home, slip);
   IO::STREAMS::Output out((home / LAUNCHER::MANIFEST).string());
   out << text;
+  if (!out.good())
+    LOGGER::get(CATEGORY).error(
+      "%s: cannot write %s", offer.leaf.c_str(),
+      (home / LAUNCHER::MANIFEST).string().c_str());
   return out.good();
 }
 
