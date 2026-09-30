@@ -11,6 +11,9 @@ namespace LAUNCHER::STORE {
 namespace {
 constexpr Char SEPARATOR = '/';
 constexpr STRING::Hot SEPARATORS = "/:";
+constexpr STRING::Hot SWEEP = "rm -rf ";
+constexpr STRING::Hot CLONE = "git clone --depth 1 ";
+constexpr STRING::Hot LINED = " --branch ";
 
 auto listed(const String &repository) -> Flag {
   for (const Offer &offer : offers)
@@ -34,13 +37,13 @@ auto LAUNCHER::STORE::GET::leaf(const String &repository) -> String {
   while (kept.size() > 1 && kept.back() == SEPARATOR) kept.pop_back();
   if (kept.ends_with(SUFFIX)) kept.resize(kept.size() - String(SUFFIX).size());
   const auto cut = kept.find_last_of(SEPARATORS);
-  const auto cut = kept.find_last_of(SEPARATOR);
   const String last = cut == String::npos ? kept : kept.substr(cut + 1);
   return last.starts_with(prefix) ? last.substr(prefix.size()) : last;
 }
 
 void LAUNCHER::STORE::load() {
   offers.clear();
+  offers.reserve(ROWS);
   IO::STREAMS::Input in(GET::list());
   String line, key, value;
   while (std::getline(in, line)) {
@@ -67,4 +70,13 @@ void LAUNCHER::STORE::installed(Offer &offer) {
   offer.installed =
     !manifest.entry.empty() &&
     fs::exists(CARTRIDGE::MANIFEST::entry(home, manifest), slip);
+}
+
+auto LAUNCHER::STORE::GET::clone(const String &repository, const String &home)
+  -> String {
+  const String from = SHELL::OS::quote(repository);
+  const String to = SHELL::OS::quote(home);
+  return String(SWEEP) + to + " && (" + CLONE + LINED + LINE::followed + " " +
+         from + " " + to + " || (" + SWEEP + to + " && " + CLONE + from + " " +
+         to + "))";
 }

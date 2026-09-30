@@ -11,24 +11,27 @@ using LAUNCHER::STORE::Offer;
 namespace LAUNCHER::STORE {
 namespace {
 
-auto address(const String &repository) -> String {
+auto address(const String &repository, const String &revision) -> String {
   namespace STORE = LAUNCHER::STORE;
   const String forge = STORE::FORGE;
   if (repository.starts_with(forge))
-    return STORE::RAW + repository.substr(forge.size()) + STORE::REVISION +
+    return STORE::RAW + repository.substr(forge.size()) + "/" + revision + "/" +
            LAUNCHER::MANIFEST;
   return (fs::path(repository) / LAUNCHER::MANIFEST).string();
 }
 
 auto fetched(const Offer &offer, String &report) -> Flag {
-  const String from = address(offer.repository);
-  if (offer.repository.find(LAUNCHER::STORE::SCHEME) == String::npos) {
-    IO::STREAMS::Input in(from);
+  namespace STORE = LAUNCHER::STORE;
+  if (offer.repository.find(STORE::SCHEME) == String::npos) {
+    IO::STREAMS::Input in(address(offer.repository, STORE::REVISION));
     if (!in) return false;
     report.assign(std::istreambuf_iterator<Char>(in), {});
     return true;
   }
-  const NETWORK::WEB::Result answer = NETWORK::WEB::get(from);
+  NETWORK::WEB::Result answer =
+    NETWORK::WEB::get(address(offer.repository, LAUNCHER::LINE::followed));
+  if (!answer.ok)
+    answer = NETWORK::WEB::get(address(offer.repository, STORE::REVISION));
   report = answer.body;
   return answer.ok;
 }
@@ -88,6 +91,4 @@ void LAUNCHER::STORE::survey() {
 
 auto LAUNCHER::STORE::GET::staging(const Offer &offer) -> String {
   return LAUNCHER::STORE::staging(offer);
-  for (Offer &offer : offers)
-    if (report(offer)) verify(offer);
 }

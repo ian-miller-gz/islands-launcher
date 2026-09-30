@@ -8,8 +8,6 @@ using LAUNCHER::STORE::Offer;
 namespace LAUNCHER::STORE {
 namespace {
 constexpr STRING::Hot DONE = "[reach] done";
-constexpr STRING::Hot SWEEP = "rm -rf ";
-constexpr STRING::Hot CLONE = "git clone --depth 1 ";
 constexpr STRING::Hot QUIET = " >/dev/null 2>&1";
 
 SHELL::OS::Process shell;
@@ -27,10 +25,9 @@ auto pending() -> Whole {
 auto command(const Offer &offer) -> String {
   namespace STORE = LAUNCHER::STORE;
   const String repository = SHELL::OS::quote(offer.repository);
-  const String home = SHELL::OS::quote(STORE::GET::staging(offer));
-  return String(STORE::PROBE) + repository + STORE::HEAD + QUIET + " && " +
-         SWEEP + home + " && " + CLONE + repository + " " + home + QUIET +
-         "; echo \"" + DONE + " $?\"";
+  return String(STORE::PROBE) + repository + STORE::HEAD + QUIET + " && (" +
+         STORE::GET::clone(offer.repository, STORE::GET::staging(offer)) + ")" +
+         QUIET + "; echo \"" + DONE + " $?\"";
 }
 
 void open(Whole row) {

@@ -55,7 +55,9 @@ static const Click CLICKS[] = {
    [] {
      LAUNCHER::STORE::link(
        String(GUI::GET::text(LAUNCHER::document, LAUNCHER::IDS::LINK)));
-   }}};
+   }},
+  {LAUNCHER::IDS::LINE,
+   [] { LAUNCHER::LINE::unfold(!LAUNCHER::LINE::unfolded); }}};
 
 static void act(const String &id) {
   Whole at = 0;
@@ -64,6 +66,7 @@ static void act(const String &id) {
   if (::banked(id, LAUNCHER::IDS::BOX, at)) return LAUNCHER::tick(at);
   if (::banked(id, LAUNCHER::IDS::INSTALL, at))
     return LAUNCHER::STORE::call(at);
+  if (::banked(id, LAUNCHER::IDS::CHOICE, at)) return LAUNCHER::LINE::pick(at);
   for (const LAUNCHER::Scene &scene : LAUNCHER::SCENES)
     if (id == scene.call) return LAUNCHER::enter(scene.call);
   for (const LAUNCHER::Area &area : LAUNCHER::AREAS)

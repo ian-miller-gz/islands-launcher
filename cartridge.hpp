@@ -93,3 +93,4 @@ auto bare(const String &line) -> String;
 #include "watch.hpp"
 #include "idle.hpp"
 #include "store.hpp"
+#include "line.hpp"

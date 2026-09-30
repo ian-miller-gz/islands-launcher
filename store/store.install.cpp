@@ -5,6 +5,7 @@
 
 namespace STORE = LAUNCHER::STORE;
 using LAUNCHER::STORE::Offer;
+using LAUNCHER::STORE::Step;
 
 namespace LAUNCHER::STORE {
 namespace {
@@ -14,6 +15,8 @@ constexpr Whole KEEP = 12;
 constexpr Whole REFUSAL = 1;
 
 SHELL::OS::Process shell;
+Offer *subject = nullptr;
+const Vector<Step> *walk = nullptr;
 Whole at = 0;
 Flag opened = false;
 Flag awaiting = false;
@@ -22,6 +25,8 @@ Vector<String> lines;
 void rest() {
   SHELL::OS::PROCESS::stop(shell);
   STORE::installing = ISLANDS::SELECT::NONE;
+  subject = nullptr;
+  walk = nullptr;
 }
 
 void sank(Offer &offer, STRING::Hot word, Whole code) {
@@ -33,7 +38,7 @@ void sank(Offer &offer, STRING::Hot word, Whole code) {
 }
 
 void open(Offer &offer) {
-  const STORE::Step &step = STORE::GET::steps()[at];
+  const Step &step = (*walk)[at];
   offer.state = step.word;
   opened = true;
   lines.clear();
@@ -57,21 +62,28 @@ auto code() -> Whole {
 }  // namespace
 }  // namespace LAUNCHER::STORE
 
-void LAUNCHER::STORE::install(Whole row) {
-  if (installing != ISLANDS::SELECT::NONE) return;
-  if (row >= offers.size() || offers[row].installed) return;
+void LAUNCHER::STORE::run(Offer &offer, const Vector<Step> &steps) {
+  if (subject != nullptr || steps.empty()) return;
   SHELL::OS::PROCESS::spawn(shell);
   if (!SHELL::OS::PROCESS::running(shell)) return;
-  installing = row;
+  subject = &offer;
+  walk = &steps;
   at = 0;
   opened = false;
   awaiting = false;
 }
 
+void LAUNCHER::STORE::install(Whole row) {
+  if (subject != nullptr) return;
+  if (row >= offers.size() || offers[row].installed) return;
+  run(offers[row], GET::steps());
+  if (subject != nullptr) installing = row;
+}
+
 void LAUNCHER::STORE::poll() {
-  if (installing == ISLANDS::SELECT::NONE) return;
-  Offer &offer = offers[installing];
-  const Step &step = GET::steps()[at];
+  if (subject == nullptr) return;
+  Offer &offer = *subject;
+  const Step &step = (*walk)[at];
   if (!SHELL::OS::PROCESS::running(shell))
     return sank(offer, step.word, REFUSAL);
   if (!opened) return open(offer);
@@ -82,8 +94,7 @@ void LAUNCHER::STORE::poll() {
   at += 1;
   opened = false;
   awaiting = false;
-  if (at < GET::steps().size()) return;
-  offer.state = MARK;
-  rest();
-  LAUNCHER::scan();
+  if (at >= walk->size()) rest();
 }
+
+auto LAUNCHER::STORE::GET::running() -> Flag { return subject != nullptr; }

@@ -9,6 +9,7 @@ inline String buffer;
 inline Flag ready = false;
 inline Whole tracked = 0;
 inline Float asked = 0;
+inline Whole mended = 0;
 
 void attach();
 void poll();

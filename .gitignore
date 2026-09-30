@@ -1,2 +1,4 @@
 posix/
 windows/
+__pycache__/
+.pytest_cache/

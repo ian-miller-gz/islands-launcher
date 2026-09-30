@@ -6,7 +6,9 @@ import time
 
 VERSION = re.compile(r'^\s*ENGINE_VERSION:\s*"([^"]*)"', re.M)
 RELEASED = re.compile(r'^release:\s*(\S+)', re.M)
+PROJECT = re.compile(r'^version\s*=\s*"([^"]*)"', re.M)
 TOOLS = re.compile(r'^tools:\s*(\S+)', re.M)
+SOUND = re.compile(r'^sound:\s*(\S+)', re.M)
 RELEASE = re.compile(r'^\d+\.\d+\.\d+$')
 WORKING = re.compile(r'^\d+\.\d+$')
 LINE = re.compile(r'^(\d+\.\d+)-[a-z0-9]+(?:-[a-z0-9]+)*$')
@@ -15,6 +17,10 @@ WEEK = 7 * 24 * 60 * 60
 DAY = 24 * 60 * 60
 CONFIG = 'configs/make.yaml'
 MANIFEST = 'manifest.yaml'
+PYPROJECT = 'pyproject.toml'
+PLUGINS = 'plugins.yaml'
+NUMBERED = {CONFIG: ('engine', VERSION), MANIFEST: ('bundle', RELEASED), PYPROJECT: ('tools', PROJECT),
+            PLUGINS: ('plugins', RELEASED)}
 TOOL = 'submodules/islands-tools'
 PRIVATE = ('agents', 'claude', 'recordings')
 FORBIDDEN = tuple('.' + name for name in PRIVATE) + ('CLAUDE' + '.md', 'docs', 'temp')
@@ -39,8 +45,17 @@ def name(release):
 
 
 def stated(text):
-  found = VERSION.search(text) or RELEASED.search(text)
+  found = VERSION.search(text) or RELEASED.search(text) or PROJECT.search(text)
   return found.group(1) if found else None
+
+
+def kind(text):
+  if SOUND.search(text):
+    return 'plugins'
+  for component, pattern in NUMBERED.values():
+    if pattern.search(text):
+      return component
+  return None
 
 
 def required(text):
@@ -49,7 +64,7 @@ def required(text):
 
 
 def config(commit):
-  for path in (CONFIG, MANIFEST):
+  for path in NUMBERED:
     done = subprocess.run(['git', 'show', f'{commit}:{path}'], capture_output=True, text=True)
     if done.returncode == 0:
       return done.stdout
@@ -92,7 +107,7 @@ def files(base, head):
 
 
 def hunk(base, head):
-  lines = git('diff', '-U0', base, head, '--', CONFIG).splitlines()
+  lines = git('diff', '-U0', base, head, '--', *NUMBERED).splitlines()
   return [line for line in lines
           if line[:1] in ('+', '-') and line[:3] not in ('+++', '---')]
 
@@ -120,7 +135,9 @@ def pinned(head):
 
 
 def bump(changed, edits):
-  return changed <= {CONFIG} and all(VERSION.match(line[1:]) for line in edits)
+  patterns = [pattern for _, pattern in NUMBERED.values()]
+  return (changed <= set(NUMBERED)
+          and all(any(pattern.match(line[1:]) for pattern in patterns) for line in edits))
 
 
 def content(head):
@@ -276,10 +293,10 @@ def check_branch(label, head):
 
 def notes(label, head):
   text = config(head)
-  rows = [('engine', name(version(head)), head)]
+  rows = [(kind(text), name(version(head)), head)]
   for line in git('ls-tree', head).splitlines():
-    mode, kind, sha, path = line.replace('\t', ' ').split(maxsplit=3)
-    if kind == 'commit':
+    mode, sort, sha, path = line.replace('\t', ' ').split(maxsplit=3)
+    if sort == 'commit':
       rows.append((path.split('/')[-1], required(text) if path == TOOL else '', sha))
   body = ['| component | release | commit |', '|---|---|---|']
   body += [f'| {component} | {release} | {sha} |' for component, release, sha in rows]

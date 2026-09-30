@@ -10,6 +10,7 @@ constexpr STRING::Hot GENERAL = "general";
 constexpr STRING::Hot CORE = "core";
 constexpr STRING::Hot RAIL = "rail";
 constexpr STRING::Hot LIBRARY = "library";
+constexpr STRING::Hot SETTINGS = "settings";
 constexpr STRING::Hot STORE = "store";
 constexpr STRING::Hot MAIN = "main";
 constexpr STRING::Hot OFFERS = "offers";
@@ -31,6 +32,11 @@ constexpr Whole FACTS = 3;
 inline auto fact(Whole at) -> String { return "pfact" + std::to_string(at); }
 constexpr STRING::Hot TREE = "tree";
 constexpr STRING::Hot CREW = "crew";
+constexpr STRING::Hot LINES = "lines";
+constexpr STRING::Hot LINE = "line";
+constexpr STRING::Hot LINESTATE = "linestate";
+constexpr STRING::Hot CHOICES = "choices";
+constexpr STRING::Hot CHOICE = "choice";
 inline auto tick(Whole at) -> String { return "tick" + std::to_string(at); }
 inline auto rule(Whole at) -> String { return "rule" + std::to_string(at); }
 inline auto box(Whole at) -> String { return BOX + std::to_string(at); }
@@ -39,6 +45,7 @@ inline auto item(STRING::Hot list, Whole at) -> String {
   return String(list) + "." + std::to_string(at);
 }
 inline auto note(Whole at) -> String { return "note" + std::to_string(at); }
+inline auto choice(Whole at) -> String { return CHOICE + std::to_string(at); }
 constexpr STRING::Hot CALLED = "name";
 constexpr STRING::Hot VERSION = "release";
 constexpr STRING::Hot DETAIL = "description";

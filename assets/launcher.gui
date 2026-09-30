@@ -7,7 +7,8 @@ panel shell style=clear anchor=stretch
     panel crest style=box x=16 y=16 w=240 h=160
       label crestnote style=muted size=18 text="Islands" x=90 y=70
     button library style=place size=18 text="Library" x=16 y=192 w=240 h=32
-    button store style=place size=18 text="Store" x=16 y=232 w=240 h=32
+    button settings style=place size=18 text="Settings" x=16 y=232 w=240 h=32
+    button store style=place size=18 text="Store" x=16 y=272 w=240 h=32
     button about style=place size=18 text="About" anchor=southwest x=16 y=-16 w=240 h=32
   panel main style=sheet anchor=stretch x=304 y=40 w=16 h=16
     button general style=place size=17 text="General" x=16 y=6 w=100 h=28
@@ -86,6 +87,14 @@ panel shell style=clear anchor=stretch
           label boxword5 style=ink size=17 x=10 y=4
           detail note5 style=note size=16 x=246 y=1 w=316 h=26 pad=4
       button setupclose style=place size=18 text="Close" anchor=southeast x=-24 y=-24 w=150 h=34
+  panel lines style=sheet anchor=stretch x=304 y=40 w=16 h=16 visible=false
+    panel linebox style=box anchor=left|right x=0 y=0 w=0 h=64
+      label lineword style=ink size=17 x=16 y=22 text="Release"
+      button line style=place size=17 x=140 y=16 w=160 h=32
+      label linestate style=muted size=17 x=316 y=22
+    button choices style=card x=140 y=48 w=160 h=72 z=8 visible=false
+      button choice0 style=entry size=17 text="stable" x=4 y=4 w=152 h=30
+      button choice1 style=entry size=17 text="latest" x=4 y=38 w=152 h=30
   panel offers style=sheet anchor=stretch x=304 y=40 w=16 h=16 visible=false
     panel offerbox style=box anchor=stretch x=0 y=0 w=0 h=0
       label name0 style=ink size=17 x=16 y=20 visible=false

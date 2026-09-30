@@ -5,8 +5,7 @@ splash: true
 size: 1280x800
 assets: assets
 version: 3
-gui:
-  dialog: true
+release: 0.1.4
 summary: islands launcher
 web: https to raw.githubusercontent.com
 engine:
@@ -16,4 +15,3 @@ platforms:
   windows:
     entry: liblauncher.dll
 console: false
-release: 0.1.3

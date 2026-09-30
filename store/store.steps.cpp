@@ -11,8 +11,6 @@ using LAUNCHER::STORE::Offer;
 namespace LAUNCHER::STORE {
 namespace {
 constexpr STRING::Hot SOURCE = "cartridge.cpp";
-constexpr STRING::Hot SWEEP = "rm -rf ";
-constexpr STRING::Hot CLONE = "git clone --depth 1 ";
 constexpr STRING::Hot BUILD = "bash cartridges/build.sh ";
 
 auto staging(const Offer &offer) -> String {
@@ -23,17 +21,11 @@ auto placed(const Offer &offer) -> String {
   return (fs::path(LAUNCHER::STORE::GET::home()) / offer.leaf).string();
 }
 
-auto quiet(const Offer &) -> String { return {}; }
-
-auto ended(Offer &) -> Flag { return true; }
-
 auto cloning(const Offer &offer) -> String {
   std::error_code stood;
   if (offer.linked && fs::exists(fs::path(staging(offer)) / SOURCE, stood))
     return {};
-  const String home = SHELL::OS::quote(staging(offer));
-  return String(SWEEP) + home + " && " + CLONE +
-         SHELL::OS::quote(offer.repository) + " " + home;
+  return LAUNCHER::STORE::GET::clone(offer.repository, staging(offer));
 }
 
 auto building(const Offer &offer) -> String {
@@ -64,10 +56,17 @@ auto placing(Offer &offer) -> Flag {
 
 auto confirmed(Offer &offer) -> Flag {
   LAUNCHER::STORE::installed(offer);
-  return offer.installed;
+  if (!offer.installed) return false;
+  offer.state = LAUNCHER::STORE::MARK;
+  LAUNCHER::scan();
+  return true;
 }
 }  // namespace
 }  // namespace LAUNCHER::STORE
+
+auto LAUNCHER::STORE::quiet(const Offer &) -> String { return {}; }
+
+auto LAUNCHER::STORE::ended(Offer &) -> Flag { return true; }
 
 auto LAUNCHER::STORE::GET::steps() -> const Vector<Step> & {
   static const Vector<Step> walk = {

@@ -23,6 +23,7 @@ struct Scene {
 
 constexpr Scene SCENES[] = {
   {IDS::LIBRARY, IDS::MAIN},
+  {IDS::SETTINGS, IDS::LINES},
   {IDS::STORE, IDS::OFFERS}};
 
 void refresh();

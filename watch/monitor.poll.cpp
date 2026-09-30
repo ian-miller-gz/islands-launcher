@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <cartridge/relations.hpp>
+
 #include "../monitor/monitor.hpp"
 
 #include "../cartridge.hpp"
@@ -7,6 +9,7 @@ static const String BEGIN = "begin\n";
 static const String END = "end\n";
 static const String STATE = "state ";
 static constexpr Float PERIOD = 1.0f;
+static constexpr Whole MENDS = 3;
 
 static void latch(pid_t pid) {
   for (auto &child : LAUNCHER::children)
@@ -52,12 +55,20 @@ void LAUNCHER::WATCH::detach() {
   ready = false;
 }
 
+static void mend() {
+  namespace WATCH = LAUNCHER::WATCH;
+  WATCH::attach();
+  if (WATCH::ready || WATCH::mended >= MENDS) return;
+  WATCH::mended += 1;
+  RELATIONS::spawn(REEF_NAME, WATCH::BUNDLE);
+}
+
 void LAUNCHER::WATCH::poll() {
-  if (!ready) return;
-  drain();
+  if (ready) drain();
   const Float now = CLOCK::GET::elapsed();
   if (now - asked < PERIOD) return;
   asked = now;
+  if (!ready) return ::mend();
   if (!NETWORK::SESSIONS::push(session, "poll\n")) detach();
 }
 
