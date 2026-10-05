@@ -1,6 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <signal.h>
-
 #include "monitor.internal.hpp"
 
 static auto found(pid_t pid) -> MONITOR::Entry * {
@@ -39,10 +37,6 @@ void MONITOR::dispatch(const String &line) {
   const String rest = line.substr(space + 1);
   if (verb == "watch") return watch(rest);
   if (verb == "forget") return forget(rest);
-}
-
-void MONITOR::sweep() {
-  for (auto &entry : roster) entry.running = kill(entry.pid, 0) == 0;
 }
 
 auto MONITOR::snapshot() -> String {

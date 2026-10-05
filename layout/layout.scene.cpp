@@ -92,8 +92,7 @@ void LAUNCHER::FOOTER::refresh() {
   GUI::set(
     document, IDS::NOTE,
     GUI::Text{GET::plain(
-      REQUIREMENTS::GET::met(WATCH::BUNDLE) ? "Attached to monitor reef."
-                                            : "Monitor Unavailable")});
+      WATCH::ready ? "Attached to monitor reef." : "Monitor Unavailable")});
   GUI::set(
     document, IDS::LAUNCH, GUI::Style{runnable ? STYLES::CALL : STYLES::STILL});
 }

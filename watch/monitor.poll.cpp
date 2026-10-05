@@ -35,7 +35,9 @@ static void ingest(const String &block) {
 }
 
 static void drain() {
-  NETWORK::SESSIONS::receive(LAUNCHER::WATCH::session, LAUNCHER::WATCH::buffer);
+  if (!NETWORK::SESSIONS::receive(
+        LAUNCHER::WATCH::session, LAUNCHER::WATCH::buffer))
+    return LAUNCHER::WATCH::detach();
   auto &buffer = LAUNCHER::WATCH::buffer;
   const auto end = buffer.rfind(END);
   if (end == String::npos) return;
@@ -44,9 +46,22 @@ static void drain() {
   buffer.erase(0, end + END.size());
 }
 
+// The dial is a glance per frame, never a wait: the session opens when the
+// monitor answers, or closes when it refuses or the dial's patience runs
+// out, and the frame goes on either way.
+static void settle() {
+  namespace WATCH = LAUNCHER::WATCH;
+  switch (NETWORK::SESSIONS::settle(WATCH::session)) {
+    case NETWORK::SESSIONS::State::OPEN: WATCH::ready = true; return;
+    case NETWORK::SESSIONS::State::CLOSED: WATCH::session = NETWORK::NONE; return;
+    case NETWORK::SESSIONS::State::DIALING: return;
+  }
+}
+
 void LAUNCHER::WATCH::attach() {
-  session = NETWORK::connect(MONITOR::NAME).handle;
-  ready = session != NETWORK::NONE;
+  session = NETWORK::dial(MONITOR::NAME).handle;
+  ready = false;
+  if (session != NETWORK::NONE) ::settle();
 }
 
 void LAUNCHER::WATCH::detach() {
@@ -55,21 +70,28 @@ void LAUNCHER::WATCH::detach() {
   ready = false;
 }
 
+// A lost monitor is mended by starting its reef again and dialing anew —
+// three times in a run, then the launcher rests on its own reaping: a
+// monitor that cannot be reached here is not reached by dialing forever.
 static void mend() {
   namespace WATCH = LAUNCHER::WATCH;
-  WATCH::attach();
-  if (WATCH::ready || WATCH::mended >= MENDS) return;
+  if (WATCH::mended >= MENDS) return;
   WATCH::mended += 1;
   RELATIONS::spawn(REEF_NAME, WATCH::BUNDLE);
+  WATCH::attach();
 }
 
 void LAUNCHER::WATCH::poll() {
+  if (session != NETWORK::NONE && !ready) ::settle();
   if (ready) drain();
   const Float now = CLOCK::GET::elapsed();
   if (now - asked < PERIOD) return;
   asked = now;
-  if (!ready) return ::mend();
-  if (!NETWORK::SESSIONS::push(session, "poll\n")) detach();
+  if (ready) {
+    if (!NETWORK::SESSIONS::push(session, "poll\n")) detach();
+    return;
+  }
+  if (session == NETWORK::NONE) ::mend();
 }
 
 void LAUNCHER::WATCH::announce(const LAUNCHER::Child &child) {
