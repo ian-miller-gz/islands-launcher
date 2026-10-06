@@ -4,3 +4,8 @@ version: 3
 host: reef
 listen: true
 summary: The reef the launcher attaches to — tracks each running child's state.
+engine:
+  platform: [posix, windows]
+platforms:
+  windows:
+    entry: libmonitor.dll

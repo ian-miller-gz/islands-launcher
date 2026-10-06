@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <filesystem>
 
+#include <common/platform/selection.hpp>
+
 #include "../cartridge.hpp"
 
 using LAUNCHER::STORE::Offer;
@@ -60,10 +62,24 @@ void close(Whole status) {
   }
   offer.state.clear();
   LAUNCHER::STORE::verify(offer);
+  LAUNCHER::STORE::claim();
 }
 }  // namespace
 }  // namespace LAUNCHER::STORE
 
+#if SR_PLATFORM == SR_WINDOWS
+// Without git the reach cannot probe or clone: the link's manifest is read
+// off the forge, one linked offer per frame, and the release asset is
+// fetched only when the offer is installed.
+void LAUNCHER::STORE::reach() {
+  const Whole row = pending();
+  if (row == ISLANDS::SELECT::NONE) return;
+  Offer &offer = offers[row];
+  offer.state.clear();
+  if (report(offer)) verify(offer);
+  claim();
+}
+#else
 void LAUNCHER::STORE::reach() {
   if (at == ISLANDS::SELECT::NONE) {
     const Whole row = pending();
@@ -74,3 +90,4 @@ void LAUNCHER::STORE::reach() {
   const Whole status = code();
   if (status != ISLANDS::SELECT::NONE) close(status);
 }
+#endif

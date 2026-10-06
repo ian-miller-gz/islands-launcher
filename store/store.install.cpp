@@ -24,6 +24,7 @@ Vector<String> lines;
 
 void rest() {
   SHELL::OS::PROCESS::stop(shell);
+  STORE::ASSET::rest();
   STORE::installing = ISLANDS::SELECT::NONE;
   subject = nullptr;
   walk = nullptr;
@@ -42,6 +43,7 @@ void open(Offer &offer) {
   offer.state = step.word;
   opened = true;
   lines.clear();
+  LOGGER::get(CATEGORY).debug("%s: %s", offer.leaf.c_str(), step.word);
   const String command = step.call(offer);
   if (command.empty()) return;
   SHELL::OS::PROCESS::feed(shell, command + "; echo \"" + DONE + " $?\"");
@@ -87,7 +89,7 @@ void LAUNCHER::STORE::poll() {
   if (!SHELL::OS::PROCESS::running(shell))
     return sank(offer, step.word, REFUSAL);
   if (!opened) return open(offer);
-  const Whole status = code();
+  const Whole status = step.wait ? step.wait(offer) : code();
   if (status == ISLANDS::SELECT::NONE) return;
   if (status || !step.held(offer))
     return sank(offer, step.word, status ? status : REFUSAL);

@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include <cartridge/relations.hpp>
+#include <common/platform/selection.hpp>
 
 #include "../cartridge.hpp"
 
@@ -36,8 +37,14 @@ auto restarted(Offer &offer) -> Flag {
 }  // namespace LAUNCHER::LINE
 
 auto LAUNCHER::LINE::GET::cloned() -> Flag {
+#if SR_PLATFORM == SR_WINDOWS
+  // A Windows prefix ships the launcher built; with no git and no compiler
+  // the line cannot be followed there, so it stands pinned.
+  return false;
+#else
   std::error_code slip;
   return fs::is_directory(fs::path(SEAT) / CLONE, slip);
+#endif
 }
 
 auto LAUNCHER::LINE::GET::steps() -> const Vector<STORE::Step> & {

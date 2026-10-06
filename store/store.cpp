@@ -17,8 +17,9 @@ constexpr STRING::Hot CLONE = "git clone --depth 1 ";
 constexpr STRING::Hot LINED = " --branch ";
 
 auto listed(const String &repository) -> Flag {
+  namespace GET = LAUNCHER::STORE::GET;
   for (const Offer &offer : offers)
-    if (offer.repository == repository) return true;
+    if (GET::root(offer.repository) == GET::root(repository)) return true;
   return false;
 }
 }  // namespace
@@ -38,11 +39,19 @@ auto LAUNCHER::STORE::GET::stage() -> String {
   return (fs::path(COMMON::STATE) / STAGING).string();
 }
 
-auto LAUNCHER::STORE::GET::leaf(const String &repository) -> String {
-  const String prefix = PREFIX;
+// The repository without its trailing separators and `.git` tail: the
+// spelling a forge address is built from, and the one two links are told
+// apart by.
+auto LAUNCHER::STORE::GET::root(const String &repository) -> String {
   String kept = repository;
   while (kept.size() > 1 && kept.back() == SEPARATOR) kept.pop_back();
   if (kept.ends_with(SUFFIX)) kept.resize(kept.size() - String(SUFFIX).size());
+  return kept;
+}
+
+auto LAUNCHER::STORE::GET::leaf(const String &repository) -> String {
+  const String prefix = PREFIX;
+  const String kept = root(repository);
   const auto cut = kept.find_last_of(SEPARATORS);
   const String last = cut == String::npos ? kept : kept.substr(cut + 1);
   return last.starts_with(prefix) ? last.substr(prefix.size()) : last;

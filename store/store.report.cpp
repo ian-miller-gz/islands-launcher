@@ -3,6 +3,7 @@
 #include <logger.hpp>
 
 #include <cartridge.hpp>
+#include <common/platform/selection.hpp>
 
 #include "../cartridge.hpp"
 
@@ -16,8 +17,9 @@ constexpr STRING::Hot CATEGORY = "~/launcher/store";
 auto address(const String &repository, const String &revision) -> String {
   namespace STORE = LAUNCHER::STORE;
   const String forge = STORE::FORGE;
-  if (repository.starts_with(forge))
-    return STORE::RAW + repository.substr(forge.size()) + "/" + revision + "/" +
+  const String root = STORE::GET::root(repository);
+  if (root.starts_with(forge))
+    return STORE::RAW + root.substr(forge.size()) + "/" + revision + "/" +
            LAUNCHER::MANIFEST;
   return (fs::path(repository) / LAUNCHER::MANIFEST).string();
 }
@@ -30,12 +32,14 @@ auto fetched(const Offer &offer, String &report) -> Flag {
     report.assign(std::istreambuf_iterator<Char>(in), {});
     return true;
   }
+  // A transfer answers ok for any status the forge gave: only a served
+  // page is a manifest; a not-found page would be refused as one.
   NETWORK::WEB::Result answer =
     NETWORK::WEB::get(address(offer.repository, LAUNCHER::LINE::followed));
-  if (!answer.ok)
+  if (!answer.ok || answer.status != STORE::SERVED)
     answer = NETWORK::WEB::get(address(offer.repository, STORE::REVISION));
   report = answer.body;
-  return answer.ok;
+  return answer.ok && answer.status == STORE::SERVED;
 }
 
 auto staging(const Offer &offer) -> String {
@@ -47,9 +51,14 @@ auto staging(const Offer &offer) -> String {
 auto LAUNCHER::STORE::report(Offer &offer) -> Flag {
   String text;
   offer.state.clear();
+#if SR_PLATFORM != SR_WINDOWS
+  // A linked offer was cloned by the reach: its manifest stands in the
+  // staging seat. On Windows nothing clones, so the link is read off the
+  // forge like a listed offer.
   std::error_code reached;
   if (offer.linked)
     return fs::exists(fs::path(staging(offer)) / LAUNCHER::MANIFEST, reached);
+#endif
   if (!fetched(offer, text)) {
     offer.state = UNREACHED;
     return false;
@@ -93,6 +102,7 @@ void LAUNCHER::STORE::survey() {
     }
     if (report(offer)) verify(offer);
   }
+  claim();
 }
 
 auto LAUNCHER::STORE::GET::staging(const Offer &offer) -> String {

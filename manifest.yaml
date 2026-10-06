@@ -6,9 +6,12 @@ size: 1280x800
 assets: assets
 version: 3
 islands: 0.4
-release: 0.2.5
+release: 0.2.6
 summary: islands launcher
 web: https to raw.githubusercontent.com
+web: https to github.com
+web: https to release-assets.githubusercontent.com
+web: https to objects.githubusercontent.com
 engine:
   web: native
   platform: [posix, windows]
