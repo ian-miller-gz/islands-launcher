@@ -35,9 +35,6 @@ auto building(const Offer &offer) -> String {
   return String(BUILD) + SHELL::OS::quote(staging(offer));
 }
 
-// A Windows install builds nothing, so the staged tree must already carry
-// the entry the manifest names for this platform (the release asset's
-// windows fold); on POSIX the build step lays it after this check.
 auto delivered(const String &home, const CARTRIDGE::Manifest &manifest)
   -> Flag {
 #if SR_PLATFORM == SR_WINDOWS
@@ -89,9 +86,6 @@ auto LAUNCHER::STORE::ended(Offer &) -> Flag { return true; }
 
 auto LAUNCHER::STORE::GET::steps() -> const Vector<Step> & {
 #if SR_PLATFORM == SR_WINDOWS
-  // No git and no compiler on a Windows desk: the fetch downloads the
-  // release's windows asset in the launcher's own process and no build
-  // step stands between the check and the placing.
   static const Vector<Step> walk = {
     {REPORTING, quiet, report},
     {VERIFYING, quiet, verify},

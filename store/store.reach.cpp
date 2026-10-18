@@ -68,9 +68,6 @@ void close(Whole status) {
 }  // namespace LAUNCHER::STORE
 
 #if SR_PLATFORM == SR_WINDOWS
-// Without git the reach cannot probe or clone: the link's manifest is read
-// off the forge, one linked offer per frame, and the release asset is
-// fetched only when the offer is installed.
 void LAUNCHER::STORE::reach() {
   const Whole row = pending();
   if (row == ISLANDS::SELECT::NONE) return;

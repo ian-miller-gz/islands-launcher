@@ -33,8 +33,6 @@ void LAUNCHER::LINE::read() {
     if (key == KEY && GET::placed(value) != ISLANDS::SELECT::NONE)
       followed = value;
   }
-  offer = {.repository = SEAT, .leaf = SEAT};
-  if (!GET::cloned()) offer.state = PINNED;
 }
 
 void LAUNCHER::LINE::write() {
@@ -43,16 +41,10 @@ void LAUNCHER::LINE::write() {
   out << KEY << ": " << followed << "\n";
 }
 
-void LAUNCHER::LINE::unfold(Flag on) {
-  unfolded = on;
-  GUI::set(document, IDS::CHOICES, GUI::Visibility{on});
-}
-
-void LAUNCHER::LINE::pick(Whole at) {
-  unfold(false);
-  if (at >= std::size(LINES) || STORE::GET::running()) return;
-  if (followed == LINES[at]) return;
-  followed = LINES[at];
+void LAUNCHER::LINE::flip() {
+  if (STORE::GET::running()) return;
+  followed = followed == STABLE ? LATEST : STABLE;
   write();
+  STORE::resurvey();
   follow();
 }

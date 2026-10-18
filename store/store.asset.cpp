@@ -15,11 +15,6 @@ namespace {
 constexpr STRING::Hot CATEGORY = "~/launcher/store";
 constexpr Whole REFUSAL = 1;
 
-// One transfer at a time. The worker owns a share of the record and the
-// frame owns another: a transfer the frame abandons (the install sank or
-// the launcher closed) runs out on its own and is dropped at the end,
-// since a web transfer cannot be interrupted mid-stream and a frame must
-// never wait on one.
 struct Transfer {
   String url;
   String into;
@@ -47,7 +42,6 @@ void carry(std::shared_ptr<Transfer> transfer) {
 }  // namespace
 }  // namespace LAUNCHER::STORE::ASSET
 
-// <repository>/releases/download/<release>/<leaf>-<release>-windows-x64.zip
 auto LAUNCHER::STORE::ASSET::address(const Offer &offer) -> String {
   return GET::root(offer.repository) + RELEASES + offer.release + "/" +
          offer.leaf + "-" + offer.release + ASSET_TAIL;

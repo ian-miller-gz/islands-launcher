@@ -13,8 +13,7 @@ struct Area {
 };
 
 constexpr Area AREAS[] = {
-  {IDS::GENERAL, HOME},
-  {IDS::CORE, "cartridges/.core"}};
+  {IDS::GENERAL, HOME}, {IDS::CORE, "cartridges/.core"}};
 
 struct Scene {
   STRING::Hot call;
@@ -54,6 +53,10 @@ void refresh();
 namespace FOOTER {
 void refresh();
 }  // namespace FOOTER
+namespace UPDATE {
+void refresh();
+void run();
+}  // namespace UPDATE
 
 void slide(STRING::Hot id, Float x);
 void span(STRING::Hot id, Float y, Float h);

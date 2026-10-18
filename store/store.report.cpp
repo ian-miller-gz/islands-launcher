@@ -32,8 +32,6 @@ auto fetched(const Offer &offer, String &report) -> Flag {
     report.assign(std::istreambuf_iterator<Char>(in), {});
     return true;
   }
-  // A transfer answers ok for any status the forge gave: only a served
-  // page is a manifest; a not-found page would be refused as one.
   NETWORK::WEB::Result answer =
     NETWORK::WEB::get(address(offer.repository, LAUNCHER::LINE::followed));
   if (!answer.ok || answer.status != STORE::SERVED)
@@ -52,9 +50,6 @@ auto LAUNCHER::STORE::report(Offer &offer) -> Flag {
   String text;
   offer.state.clear();
 #if SR_PLATFORM != SR_WINDOWS
-  // A linked offer was cloned by the reach: its manifest stands in the
-  // staging seat. On Windows nothing clones, so the link is read off the
-  // forge like a listed offer.
   std::error_code reached;
   if (offer.linked)
     return fs::exists(fs::path(staging(offer)) / LAUNCHER::MANIFEST, reached);
@@ -89,20 +84,6 @@ auto LAUNCHER::STORE::verify(Offer &offer) -> Flag {
   offer.entry = manifest.entry;
   offer.release = found != manifest.keys.end() ? found->second : String();
   return true;
-}
-
-void LAUNCHER::STORE::survey() {
-  if (surveyed) return;
-  surveyed = true;
-  load();
-  for (Offer &offer : offers) {
-    if (offer.linked) {
-      offer.state = REACHING;
-      continue;
-    }
-    if (report(offer)) verify(offer);
-  }
-  claim();
 }
 
 auto LAUNCHER::STORE::GET::staging(const Offer &offer) -> String {

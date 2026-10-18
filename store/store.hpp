@@ -8,6 +8,7 @@ struct Offer {
   String description;
   String name;
   String release;
+  String held;
   String entry;
   String leaf;
   String state;
@@ -41,7 +42,6 @@ constexpr STRING::Hot REFUSED = "refused";
 constexpr STRING::Hot FAILED = "failed";
 constexpr STRING::Hot REPORTING = "reporting";
 constexpr STRING::Hot REACHING = "reaching";
-constexpr STRING::Hot FULL = "full";
 constexpr STRING::Hot VERIFYING = "verifying";
 constexpr STRING::Hot FETCHING = "fetching";
 constexpr STRING::Hot CHECKING = "checking";
@@ -53,10 +53,6 @@ constexpr STRING::Hot RELEASES = "/releases/download/";
 constexpr STRING::Hot ASSET_TAIL = "-windows-x64.zip";
 constexpr Whole SERVED = 200;
 
-// A step is a shell command (`call`) the runner feeds and a check (`held`)
-// it asks once the command ended — or, when `wait` is set, work the
-// launcher does in its own process: `wait` answers NONE while the work
-// goes on, 0 when it ended well, and a code when it failed.
 struct Step {
   STRING::Hot word;
   auto (*call)(const Offer &offer) -> String;
@@ -67,12 +63,9 @@ struct Step {
 inline Vector<Offer> offers;
 inline Flag surveyed = false;
 inline Whole installing = ISLANDS::SELECT::NONE;
-// The repository an `install <repository>` argument asked for: installed
-// as soon as its offer is reported and verified, then forgotten.
 inline String wanted;
 
 void load();
-void survey();
 auto report(Offer &offer) -> Flag;
 auto verify(Offer &offer) -> Flag;
 void install(Whole row);
@@ -81,19 +74,14 @@ void poll();
 auto quiet(const Offer &offer) -> String;
 auto ended(Offer &offer) -> Flag;
 void reach();
-void link(const String &repository);
-auto keep(const String &repository) -> Flag;
+void link();
+auto keep(const String &repository) -> STRING::Hot;
 void argued();
 void remove(Whole row);
 void call(Whole row);
-void installed(Offer &offer);
 void refresh();
 void claim();
 
-// The Windows fetch: a bundle's release carries a prebuilt windows fold as
-// the asset <leaf>-<release>-windows-x64.zip beside its sources; the
-// launcher downloads it off the frame and unpacks it into the staging
-// seat, since a Windows install builds nothing.
 namespace ASSET {
 auto address(const Offer &offer) -> String;
 auto wait(Offer &offer) -> Whole;

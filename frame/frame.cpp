@@ -51,13 +51,11 @@ static const Click CLICKS[] = {
        LAUNCHER::document, LAUNCHER::IDS::SETUP,
        GUI::Visibility{!LAUNCHER::GET::setting()});
    }},
-  {LAUNCHER::IDS::JOIN,
-   [] {
-     LAUNCHER::STORE::link(
-       String(GUI::GET::text(LAUNCHER::document, LAUNCHER::IDS::LINK)));
-   }},
-  {LAUNCHER::IDS::LINE,
-   [] { LAUNCHER::LINE::unfold(!LAUNCHER::LINE::unfolded); }}};
+  {LAUNCHER::IDS::JOIN, [] { LAUNCHER::STORE::ask(); }},
+  {LAUNCHER::IDS::KEEP, [] { LAUNCHER::STORE::link(); }},
+  {LAUNCHER::IDS::LEAVE, [] { LAUNCHER::STORE::drop(); }},
+  {LAUNCHER::IDS::LINE, [] { LAUNCHER::LINE::flip(); }},
+  {LAUNCHER::IDS::PUPDATE, [] { LAUNCHER::UPDATE::run(); }}};
 
 static void act(const String &id) {
   Whole at = 0;
@@ -66,7 +64,8 @@ static void act(const String &id) {
   if (::banked(id, LAUNCHER::IDS::BOX, at)) return LAUNCHER::tick(at);
   if (::banked(id, LAUNCHER::IDS::INSTALL, at))
     return LAUNCHER::STORE::call(at);
-  if (::banked(id, LAUNCHER::IDS::CHOICE, at)) return LAUNCHER::LINE::pick(at);
+  if (::banked(id, LAUNCHER::IDS::UPDATE, at))
+    return LAUNCHER::STORE::update(at);
   for (const LAUNCHER::Scene &scene : LAUNCHER::SCENES)
     if (id == scene.call) return LAUNCHER::enter(scene.call);
   for (const LAUNCHER::Area &area : LAUNCHER::AREAS)
@@ -74,11 +73,8 @@ static void act(const String &id) {
 }
 
 static void land(const String &id) {
-  namespace IDS = LAUNCHER::IDS;
-  const auto cursor = [&] {
-    return GUI::GET::cursor(LAUNCHER::document, id.c_str());
-  };
-  if (id == IDS::TREE) return LAUNCHER::choose(cursor());
+  if (id == LAUNCHER::IDS::TREE)
+    LAUNCHER::choose(GUI::GET::cursor(LAUNCHER::document, id.c_str()));
 }
 
 static void take(const String &id) {
@@ -95,6 +91,7 @@ static void react() {
     if (event.kind == GUI::Event::CLICKED) ::act(event.id);
     if (event.kind == GUI::Event::SELECTED) ::land(event.id);
     if (event.kind == GUI::Event::ACTIVATED) ::take(event.id);
+    if (event.kind == GUI::Event::COMMITTED) LAUNCHER::commit(event.id);
   }
 }
 

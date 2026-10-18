@@ -38,8 +38,6 @@ auto restarted(Offer &offer) -> Flag {
 
 auto LAUNCHER::LINE::GET::cloned() -> Flag {
 #if SR_PLATFORM == SR_WINDOWS
-  // A Windows prefix ships the launcher built; with no git and no compiler
-  // the line cannot be followed there, so it stands pinned.
   return false;
 #else
   std::error_code slip;
@@ -57,9 +55,5 @@ auto LAUNCHER::LINE::GET::steps() -> const Vector<STORE::Step> & {
 
 void LAUNCHER::LINE::follow() {
   offer = {.repository = SEAT, .leaf = SEAT};
-  if (!GET::cloned()) {
-    offer.state = PINNED;
-    return;
-  }
-  STORE::run(offer, GET::steps());
+  if (GET::cloned()) STORE::run(offer, GET::steps());
 }

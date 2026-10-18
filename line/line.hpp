@@ -10,17 +10,14 @@ constexpr STRING::Hot PATH = "configs/release.yaml";
 constexpr STRING::Hot KEY = "release";
 constexpr STRING::Hot SEAT = "cartridges/.core/launcher";
 constexpr STRING::Hot CLONE = ".git";
-constexpr STRING::Hot PINNED = "pinned";
 constexpr STRING::Hot RESTARTING = "restarting";
 
 inline String followed = STABLE;
-inline Flag unfolded = false;
 inline STORE::Offer offer;
 
 void read();
 void write();
-void unfold(Flag on);
-void pick(Whole at);
+void flip();
 void follow();
 void refresh();
 

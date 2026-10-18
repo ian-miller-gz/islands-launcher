@@ -3,7 +3,7 @@
 
 namespace LAUNCHER {
 namespace {
-constexpr STRING::Hot NOTICED = "Islands Beta - ver. ";
+constexpr STRING::Hot NOTICED = "Islands Beta ";
 }  // namespace
 }  // namespace LAUNCHER
 

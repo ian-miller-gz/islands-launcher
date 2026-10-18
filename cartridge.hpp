@@ -75,6 +75,7 @@ void stop(pid_t pid);
 void stop();
 void dismiss(pid_t pid);
 void update();
+void commit(const String &id);
 auto prompt(GFX::Viewport viewport) -> Flag;
 
 namespace SETUP {

@@ -28,4 +28,5 @@ void LAUNCHER::refresh() {
   STORE::refresh();
   LINE::refresh();
   FOOTER::refresh();
+  UPDATE::refresh();
 }

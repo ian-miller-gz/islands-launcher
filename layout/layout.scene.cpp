@@ -49,7 +49,7 @@ void LAUNCHER::PREVIEW::refresh() {
   GUI::set(
     document, IDS::SUMMARY,
     GUI::Text{
-      GET::plain(picked && !entry.built ? "Not built yet." : entry.summary)});
+      GET::plain(picked && !entry.built ? "not built" : entry.summary)});
 }
 
 void LAUNCHER::CREW::refresh() {
@@ -91,8 +91,8 @@ void LAUNCHER::FOOTER::refresh() {
   const Flag runnable = at < entries.size() && entries[at].built;
   GUI::set(
     document, IDS::NOTE,
-    GUI::Text{GET::plain(
-      WATCH::ready ? "Attached to monitor reef." : "Monitor Unavailable")});
+    GUI::Text{
+      GET::plain(WATCH::ready ? "monitor attached" : "monitor unavailable")});
   GUI::set(
     document, IDS::LAUNCH, GUI::Style{runnable ? STYLES::CALL : STYLES::STILL});
 }

@@ -33,9 +33,6 @@ auto trimmed(const String &text) -> String {
   return text.substr(first, last - first + 1);
 }
 
-void note(STRING::Hot word) {
-  GUI::set(LAUNCHER::document, LAUNCHER::IDS::LINKED, GUI::Text{word});
-}
 }  // namespace
 }  // namespace LAUNCHER::STORE
 
@@ -51,12 +48,12 @@ auto LAUNCHER::STORE::GET::links() -> Vector<String> {
   return links;
 }
 
-auto LAUNCHER::STORE::keep(const String &text) -> Flag {
+auto LAUNCHER::STORE::keep(const String &text) -> STRING::Hot {
   const String repository = trimmed(text);
-  if (repository.empty()) return true;
+  if (repository.empty()) return EMPTY;
   for (const Offer &offer : offers)
-    if (GET::root(offer.repository) == GET::root(repository)) return true;
-  if (offers.size() >= ROWS) return false;
+    if (GET::root(offer.repository) == GET::root(repository)) return LISTED;
+  if (offers.size() >= ROWS) return FULL;
   Vector<String> links = GET::links();
   links.push_back(repository);
   write(links);
@@ -65,23 +62,15 @@ auto LAUNCHER::STORE::keep(const String &text) -> Flag {
      .leaf = GET::leaf(repository),
      .state = REACHING,
      .linked = true});
-  return true;
+  return ADDED;
 }
 
-void LAUNCHER::STORE::link(const String &text) {
-  GUI::set(document, IDS::LINK, GUI::Text{String()});
-  note(keep(text) ? "" : FULL);
-}
-
-// The command line's two words: `link <repository>` keeps a link; `install
-// <repository>` keeps it and installs it once its offer is verified, with
-// the store page shown so the walk is watched.
 void LAUNCHER::STORE::argued() {
   const Vector<String> &words = CARTRIDGE::GET::arguments();
   if (words.size() != 2) return;
   if (!surveyed) load();
   if (words[0] == WORD) keep(words[1]);
-  if (words[0] != WANT || !keep(words[1])) return;
+  if (words[0] != WANT || keep(words[1]) == FULL) return;
   wanted = trimmed(words[1]);
   LAUNCHER::enter(IDS::STORE);
 }
@@ -94,7 +83,8 @@ void LAUNCHER::STORE::claim() {
     if (offer.state == REACHING) return;
     if (offer.state == UNREACHED || offer.state == REFUSED) {
       LOGGER::get("~/launcher/store")
-        .error("%s: %s, not installed", offer.leaf.c_str(), offer.state.c_str());
+        .error(
+          "%s: %s, not installed", offer.leaf.c_str(), offer.state.c_str());
       wanted.clear();
       return;
     }

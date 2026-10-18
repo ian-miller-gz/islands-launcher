@@ -25,9 +25,7 @@ auto listed(const String &repository) -> Flag {
 }  // namespace
 }  // namespace LAUNCHER::STORE
 
-auto LAUNCHER::STORE::GET::list() -> String {
-  return String(LIST);
-}
+auto LAUNCHER::STORE::GET::list() -> String { return String(LIST); }
 
 auto LAUNCHER::STORE::GET::home() -> String {
   if (COMMON::STATE == COMMON::HOME) return String(HOME);
@@ -39,9 +37,6 @@ auto LAUNCHER::STORE::GET::stage() -> String {
   return (fs::path(COMMON::STATE) / STAGING).string();
 }
 
-// The repository without its trailing separators and `.git` tail: the
-// spelling a forge address is built from, and the one two links are told
-// apart by.
 auto LAUNCHER::STORE::GET::root(const String &repository) -> String {
   String kept = repository;
   while (kept.size() > 1 && kept.back() == SEPARATOR) kept.pop_back();

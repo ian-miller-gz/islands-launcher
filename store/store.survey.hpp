@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#pragma once
+
+namespace LAUNCHER::STORE {
+void survey();
+void resurvey();
+}  // namespace LAUNCHER::STORE

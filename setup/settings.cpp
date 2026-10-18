@@ -37,7 +37,7 @@ static void offer() {
   LAUNCHER::controls.push_back(
     {.id = "watch",
      .label = "Monitor",
-     .summary = "enable to attach monitor",
+     .summary = "attach monitor",
      .on = true,
      .ready = true});
 }

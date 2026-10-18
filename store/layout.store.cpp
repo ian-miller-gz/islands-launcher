@@ -3,9 +3,12 @@
 
 namespace LAUNCHER::STORE {
 namespace {
+constexpr Whole DETAILED = 22;
+
 constexpr STRING::Hot COLUMNS[] = {
   LAUNCHER::IDS::CALLED,  LAUNCHER::IDS::VERSION,  LAUNCHER::IDS::DETAIL,
-  LAUNCHER::IDS::INSTALL, LAUNCHER::IDS::STANDING, LAUNCHER::IDS::PROGRESS};
+  LAUNCHER::IDS::INSTALL, LAUNCHER::IDS::STANDING, LAUNCHER::IDS::PROGRESS,
+  LAUNCHER::IDS::UPDATE};
 
 void show(Whole at, Flag standing) {
   for (STRING::Hot column : COLUMNS)
@@ -26,9 +29,9 @@ void dress(STRING::Hot column, Whole at, STRING::Hot style) {
     GUI::Style{style});
 }
 
-auto face(const LAUNCHER::STORE::Offer &offer) -> STRING::Hot {
+auto face(Flag settled) -> STRING::Hot {
   namespace STORE = LAUNCHER::STORE;
-  if (offer.installed) return STORE::CROSS;
+  if (settled) return STORE::CROSS;
   return STORE::installing == ISLANDS::SELECT::NONE ? STORE::OFFERED
                                                     : STORE::BUSY;
 }
@@ -45,24 +48,36 @@ void gauge(Whole at) {
       GUI::Fraction{LAUNCHER::STORE::GET::progress()});
 }
 
+void raise(Whole at) {
+  namespace IDS = LAUNCHER::IDS;
+  namespace STORE = LAUNCHER::STORE;
+  GUI::set(
+    LAUNCHER::document, IDS::cell(IDS::UPDATE, at).c_str(),
+    GUI::Visibility{STORE::GET::update(at) && !STORE::GET::running()});
+}
+
 void write(Whole at, const LAUNCHER::STORE::Offer &offer) {
   namespace IDS = LAUNCHER::IDS;
   namespace STORE = LAUNCHER::STORE;
   namespace STYLES = LAUNCHER::STYLES;
+  const Flag settled = offer.installed && STORE::installing != at;
   cell(IDS::CALLED, at, LAUNCHER::GET::plain(offer.name));
   cell(IDS::VERSION, at, LAUNCHER::GET::plain(offer.release));
-  cell(IDS::DETAIL, at, LAUNCHER::GET::plain(offer.description));
-  cell(IDS::STANDING, at, offer.installed ? String(STORE::MARK) : offer.state);
-  dress(IDS::STANDING, at, offer.installed ? STYLES::MARK : STYLES::MUTED);
-  cell(IDS::INSTALL, at, face(offer));
-  dress(IDS::INSTALL, at, offer.installed ? STYLES::DROP : STYLES::PLACE);
+  cell(IDS::DETAIL, at, LAUNCHER::GET::shortened(offer.description, DETAILED));
+  cell(IDS::STANDING, at, settled ? String(STORE::MARK) : offer.state);
+  dress(IDS::STANDING, at, settled ? STYLES::MARK : STYLES::MUTED);
+  cell(IDS::INSTALL, at, face(settled));
+  dress(IDS::INSTALL, at, settled ? STYLES::DROP : STYLES::PLACE);
   gauge(at);
+  raise(at);
 }
 }  // namespace
 }  // namespace LAUNCHER::STORE
 
 void LAUNCHER::STORE::refresh() {
+  for (Offer &offer : offers) offer.held = held(offer);
   if (showing != IDS::OFFERS) return;
+  GUI::set(document, IDS::LINKED, GUI::Text{String(noted)});
   for (Whole at = 0; at < ROWS; at += 1) {
     show(at, at < offers.size());
     if (at >= offers.size()) continue;

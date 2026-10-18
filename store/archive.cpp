@@ -7,12 +7,6 @@
 
 namespace fs = std::filesystem;
 
-// A release's windows asset is a zip whose entries are STORED (`zip -0`):
-// the bundle's dll and assets gain little from deflate, and a reader that
-// copies bytes needs no inflater. The walk reads each local file header in
-// turn and stops at the central directory; a deflated entry, a streamed
-// one (sizes in a trailing descriptor) or a name that leaves the seat is
-// refused with the reason.
 namespace LAUNCHER::STORE::ARCHIVE {
 namespace {
 constexpr std::uint32_t LOCAL = 0x04034b50;
@@ -69,7 +63,7 @@ auto LAUNCHER::STORE::ARCHIVE::unpack(
     const std::uint32_t signature = word(bytes, at);
     if (signature == CENTRAL) break;
     if (signature != LOCAL || at + HEADER > bytes.size()) {
-      error = "not a zip archive";
+      error = "malformed zip archive";
       return false;
     }
     const std::uint16_t flags = half(bytes, at + 6);
@@ -85,11 +79,11 @@ auto LAUNCHER::STORE::ARCHIVE::unpack(
     }
     const String name = bytes.substr(at + HEADER, named);
     if (!contained(name)) {
-      error = "zip entry leaves the seat: " + name;
+      error = "zip entry outside seat: " + name;
       return false;
     }
     if (method != STORED || (flags & STREAMED) || packed != size) {
-      error = "zip entry is not stored: " + name;
+      error = "zip entry not stored: " + name;
       return false;
     }
     if (!name.ends_with(SLASH)) {

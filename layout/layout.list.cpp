@@ -12,6 +12,17 @@ auto LAUNCHER::GET::folded(const Entry &entry) -> GUI::Fold {
   return {entry.open ? GUI::Fold::OPEN : GUI::Fold::CLOSED};
 }
 
+static void unmark(Whole first, Whole window) {
+  namespace IDS = LAUNCHER::IDS;
+  if (!LAUNCHER::chosen.empty()) return;
+  const Whole cursor = GUI::GET::cursor(LAUNCHER::document, IDS::TREE);
+  if (cursor >= LAUNCHER::entries.size() || cursor < first) return;
+  if (cursor - first >= window) return;
+  GUI::set(
+    LAUNCHER::document, IDS::item(IDS::TREE, cursor - first).c_str(),
+    GUI::Style{LAUNCHER::STYLES::LEAF});
+}
+
 void LAUNCHER::LISTING::refresh() {
   GUI::set(document, IDS::BARE, GUI::Visibility{entries.empty()});
   GUI::set(document, IDS::TREE, GUI::Rows{entries.size()});
@@ -29,4 +40,5 @@ void LAUNCHER::LISTING::refresh() {
       document, id.c_str(),
       GUI::Text{GET::shortened(GET::worn(entry), GET::columns(entry.depth))});
   }
+  ::unmark(first, window);
 }

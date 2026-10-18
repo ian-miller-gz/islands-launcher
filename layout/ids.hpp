@@ -21,6 +21,7 @@ constexpr STRING::Hot NOTE = "note";
 constexpr STRING::Hot BARE = "bare";
 constexpr STRING::Hot QUIET = "quiet";
 constexpr STRING::Hot LAUNCH = "launch";
+constexpr STRING::Hot PUPDATE = "pupdate";
 constexpr STRING::Hot GEAR = "gear";
 constexpr STRING::Hot SETUP = "setup";
 constexpr STRING::Hot SETTLE = "setupclose";
@@ -35,8 +36,6 @@ constexpr STRING::Hot CREW = "crew";
 constexpr STRING::Hot LINES = "lines";
 constexpr STRING::Hot LINE = "line";
 constexpr STRING::Hot LINESTATE = "linestate";
-constexpr STRING::Hot CHOICES = "choices";
-constexpr STRING::Hot CHOICE = "choice";
 inline auto tick(Whole at) -> String { return "tick" + std::to_string(at); }
 inline auto rule(Whole at) -> String { return "rule" + std::to_string(at); }
 inline auto box(Whole at) -> String { return BOX + std::to_string(at); }
@@ -45,15 +44,19 @@ inline auto item(STRING::Hot list, Whole at) -> String {
   return String(list) + "." + std::to_string(at);
 }
 inline auto note(Whole at) -> String { return "note" + std::to_string(at); }
-inline auto choice(Whole at) -> String { return CHOICE + std::to_string(at); }
 constexpr STRING::Hot CALLED = "name";
 constexpr STRING::Hot VERSION = "release";
 constexpr STRING::Hot DETAIL = "description";
 constexpr STRING::Hot INSTALL = "install";
+constexpr STRING::Hot UPDATE = "update";
 constexpr STRING::Hot STANDING = "state";
 constexpr STRING::Hot PROGRESS = "progress";
 constexpr STRING::Hot LINK = "link";
 constexpr STRING::Hot JOIN = "linkadd";
+constexpr STRING::Hot CARD = "linkcard";
+constexpr STRING::Hot KEEP = "linkkeep";
+constexpr STRING::Hot LEAVE = "linkclose";
+constexpr STRING::Hot NOTED = "linknote";
 constexpr STRING::Hot LINKED = "linkstate";
 inline auto cell(STRING::Hot column, Whole at) -> String {
   return String(column) + std::to_string(at);
