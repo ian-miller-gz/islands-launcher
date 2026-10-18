@@ -36,6 +36,21 @@ constexpr STRING::Hot CREW = "crew";
 constexpr STRING::Hot LINES = "lines";
 constexpr STRING::Hot LINE = "line";
 constexpr STRING::Hot LINESTATE = "linestate";
+constexpr STRING::Hot SLINE = "sline";
+constexpr STRING::Hot SLINES = "slines";
+inline auto sline(Whole at) -> String { return SLINE + std::to_string(at); }
+constexpr STRING::Hot SADD = "sadd";
+constexpr STRING::Hot RLINE = "rline";
+constexpr STRING::Hot RADD = "radd";
+constexpr STRING::Hot RLINES = "rlines";
+inline auto rline(Whole at) -> String { return RLINE + std::to_string(at); }
+inline auto radd(Whole at) -> String { return RADD + std::to_string(at); }
+inline auto rentry(Whole at) -> String { return "rentry" + std::to_string(at); }
+constexpr STRING::Hot CAPTION = "setupline";
+constexpr STRING::Hot PLINE = "pline";
+constexpr STRING::Hot PLINES = "plines";
+inline auto pline(Whole at) -> String { return PLINE + std::to_string(at); }
+constexpr STRING::Hot SOURCES = "sources";
 inline auto tick(Whole at) -> String { return "tick" + std::to_string(at); }
 inline auto rule(Whole at) -> String { return "rule" + std::to_string(at); }
 inline auto box(Whole at) -> String { return BOX + std::to_string(at); }
@@ -62,3 +77,18 @@ inline auto cell(STRING::Hot column, Whole at) -> String {
   return String(column) + std::to_string(at);
 }
 }  // namespace LAUNCHER::IDS
+
+namespace LAUNCHER::IDS::SOURCE {
+constexpr STRING::Hot CARD = "sourcecard";
+constexpr STRING::Hot TITLE = "sourcename";
+constexpr STRING::Hot LIST = "sourcelist";
+constexpr STRING::Hot ORIGIN = "source";
+constexpr STRING::Hot SIDE = "side";
+constexpr STRING::Hot FIND = "find";
+constexpr STRING::Hot FOUND = "found";
+inline auto row(Whole at) -> String { return item(FOUND, at); }
+constexpr STRING::Hot STATE = "sourcestate";
+constexpr STRING::Hot DROP = "sourcedrop";
+constexpr STRING::Hot ADD = "sourceadd";
+constexpr STRING::Hot CLOSE = "sourceclose";
+}  // namespace LAUNCHER::IDS::SOURCE

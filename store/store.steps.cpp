@@ -16,19 +16,18 @@ constexpr STRING::Hot CATEGORY = "~/launcher/store";
 constexpr STRING::Hot SOURCE = "cartridge.cpp";
 constexpr STRING::Hot BUILD = "bash cartridges/build.sh ";
 
-auto staging(const Offer &offer) -> String {
-  return (fs::path(LAUNCHER::STORE::GET::stage()) / offer.leaf).string();
-}
+using LAUNCHER::STORE::GET::staging;
 
 auto placed(const Offer &offer) -> String {
   return (fs::path(LAUNCHER::STORE::GET::home()) / offer.leaf).string();
 }
 
 auto cloning(const Offer &offer) -> String {
-  std::error_code stood;
-  if (offer.linked && fs::exists(fs::path(staging(offer)) / SOURCE, stood))
+  std::error_code slip;
+  if (
+    GET::reached(offer) && fs::exists(fs::path(staging(offer)) / SOURCE, slip))
     return {};
-  return LAUNCHER::STORE::GET::clone(offer.repository, staging(offer));
+  return LAUNCHER::STORE::GET::clone(offer, staging(offer));
 }
 
 auto building(const Offer &offer) -> String {
@@ -72,6 +71,7 @@ auto confirmed(Offer &offer) -> Flag {
   LAUNCHER::STORE::installed(offer);
   if (!offer.installed) return false;
   offer.state = LAUNCHER::STORE::MARK;
+  LAUNCHER::LINE::mark(offer.leaf, offer.tip);
   LOGGER::get(CATEGORY).info(
     "%s: installed %s", offer.leaf.c_str(), placed(offer).c_str());
   LAUNCHER::scan();

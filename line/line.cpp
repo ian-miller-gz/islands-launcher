@@ -30,21 +30,13 @@ void LAUNCHER::LINE::read() {
   while (std::getline(in, line)) {
     const String text = LAUNCHER::GET::bare(line);
     if (!STRING::pair(text, key, value)) continue;
-    if (key == KEY && GET::placed(value) != ISLANDS::SELECT::NONE)
-      followed = value;
+    if (key == KEY && SOURCES::GET::taken(LAUNCHER, value)) followed = value;
   }
+  load();
 }
 
 void LAUNCHER::LINE::write() {
   IO::STREAMS::Output out(file());
   if (!out) return;
   out << KEY << ": " << followed << "\n";
-}
-
-void LAUNCHER::LINE::flip() {
-  if (STORE::GET::running()) return;
-  followed = followed == STABLE ? LATEST : STABLE;
-  write();
-  STORE::resurvey();
-  follow();
 }

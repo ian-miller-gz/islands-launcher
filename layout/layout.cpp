@@ -24,6 +24,7 @@ void LAUNCHER::refresh() {
   CARDS::refresh();
   PREVIEW::refresh();
   SETUP::refresh();
+  SOURCES::CARD::refresh();
   CREW::refresh();
   STORE::refresh();
   LINE::refresh();

@@ -41,10 +41,6 @@ static const Click CLICKS[] = {
        GUI::Visibility{!LAUNCHER::GET::noticing()});
    }},
   {LAUNCHER::IDS::LAUNCH, [] { LAUNCHER::start(); }},
-  {LAUNCHER::IDS::SETTLE,
-   [] {
-     GUI::set(LAUNCHER::document, LAUNCHER::IDS::SETUP, GUI::Visibility{false});
-   }},
   {LAUNCHER::IDS::GEAR,
    [] {
      GUI::set(
@@ -54,13 +50,13 @@ static const Click CLICKS[] = {
   {LAUNCHER::IDS::JOIN, [] { LAUNCHER::STORE::ask(); }},
   {LAUNCHER::IDS::KEEP, [] { LAUNCHER::STORE::link(); }},
   {LAUNCHER::IDS::LEAVE, [] { LAUNCHER::STORE::drop(); }},
-  {LAUNCHER::IDS::LINE, [] { LAUNCHER::LINE::flip(); }},
   {LAUNCHER::IDS::PUPDATE, [] { LAUNCHER::UPDATE::run(); }}};
 
 static void act(const String &id) {
   Whole at = 0;
   for (const Click &click : CLICKS)
     if (id == click.id) return click.run();
+  if (LAUNCHER::LINE::click(id)) return;
   if (::banked(id, LAUNCHER::IDS::BOX, at)) return LAUNCHER::tick(at);
   if (::banked(id, LAUNCHER::IDS::INSTALL, at))
     return LAUNCHER::STORE::call(at);
@@ -96,10 +92,7 @@ static void react() {
 }
 
 void LAUNCHER::update() {
-  reap();
-  WATCH::poll();
-  STORE::poll();
-  STORE::reach();
+  poll();
   const GFX::Viewport viewport = GFX::WINDOWS::MAIN::viewport();
   GUI::place(document, viewport);
   if (!prompt(viewport)) {

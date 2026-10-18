@@ -4,3 +4,4 @@
 #include "store/store.survey.hpp"
 #include "store/store.links.hpp"
 #include "store/store.update.hpp"
+#include "store/store.lines.hpp"

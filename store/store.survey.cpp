@@ -8,7 +8,7 @@ void LAUNCHER::STORE::survey() {
   surveyed = true;
   load();
   for (Offer &offer : offers) {
-    if (offer.linked) {
+    if (GET::reached(offer)) {
       offer.state = REACHING;
       continue;
     }

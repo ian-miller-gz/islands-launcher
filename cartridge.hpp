@@ -75,6 +75,7 @@ void stop(pid_t pid);
 void stop();
 void dismiss(pid_t pid);
 void update();
+void poll();
 void commit(const String &id);
 auto prompt(GFX::Viewport viewport) -> Flag;
 
@@ -95,3 +96,4 @@ auto bare(const String &line) -> String;
 #include "idle.hpp"
 #include "store.hpp"
 #include "line.hpp"
+#include "sources.hpp"

@@ -27,7 +27,10 @@ auto LAUNCHER::STORE::held(const Offer &offer) -> String {
 auto LAUNCHER::STORE::GET::update(Whole row) -> Flag {
   if (row >= offers.size()) return false;
   const Offer &offer = offers[row];
-  return offer.installed && !offer.held.empty() && !offer.release.empty() &&
+  if (!offer.installed) return false;
+  if (named(offer))
+    return !offer.tip.empty() && offer.tip != LINE::GET::tip(offer.leaf);
+  return !offer.held.empty() && !offer.release.empty() &&
          offer.held != offer.release;
 }
 

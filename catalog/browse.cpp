@@ -49,6 +49,8 @@ void LAUNCHER::enter(STRING::Hot call) {
     if (String(scene.call) != call) continue;
     showing = showing == scene.panel ? String() : String(scene.panel);
   }
+  LINE::fold();
+  SOURCES::CARD::drop();
   if (showing != IDS::OFFERS) return;
   STORE::resurvey();
   STORE::survey();

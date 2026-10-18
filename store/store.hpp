@@ -12,6 +12,7 @@ struct Offer {
   String entry;
   String leaf;
   String state;
+  String tip;
   Flag installed = false;
   Flag linked = false;
 };
@@ -100,7 +101,6 @@ auto leaf(const String &repository) -> String;
 auto root(const String &repository) -> String;
 auto steps() -> const Vector<Step> &;
 auto running() -> Flag;
-auto clone(const String &repository, const String &home) -> String;
 auto progress() -> Float;
 auto links() -> Vector<String>;
 auto staging(const Offer &offer) -> String;

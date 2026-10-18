@@ -5,15 +5,16 @@
 
 namespace fs = std::filesystem;
 
-static auto leaf() -> String {
+auto LAUNCHER::GET::leaf() -> String {
   const fs::path chosen = LAUNCHER::chosen;
   if (chosen.parent_path() != fs::path(LAUNCHER::STORE::GET::home())) return {};
   return chosen.filename().string();
 }
 
 void LAUNCHER::UPDATE::refresh() {
-  const Flag standing = STORE::GET::update(::leaf()) && !STORE::GET::running();
+  const Flag standing =
+    STORE::GET::update(GET::leaf()) && !STORE::GET::running();
   GUI::set(document, IDS::PUPDATE, GUI::Visibility{standing});
 }
 
-void LAUNCHER::UPDATE::run() { STORE::update(::leaf()); }
+void LAUNCHER::UPDATE::run() { STORE::update(GET::leaf()); }

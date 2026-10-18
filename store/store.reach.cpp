@@ -10,26 +10,26 @@ using LAUNCHER::STORE::Offer;
 namespace LAUNCHER::STORE {
 namespace {
 constexpr STRING::Hot DONE = "[reach] done";
-constexpr STRING::Hot QUIET = " >/dev/null 2>&1";
 
 SHELL::OS::Process shell;
 Whole at = ISLANDS::SELECT::NONE;
+String tip;
 
 auto pending() -> Whole {
   namespace STORE = LAUNCHER::STORE;
   for (Whole row = 0; row < STORE::offers.size(); row += 1)
     if (
-      STORE::offers[row].linked && STORE::offers[row].state == STORE::REACHING)
+      STORE::GET::reached(STORE::offers[row]) &&
+      STORE::offers[row].state == STORE::REACHING)
       return row;
   return ISLANDS::SELECT::NONE;
 }
 
 auto command(const Offer &offer) -> String {
   namespace STORE = LAUNCHER::STORE;
-  const String repository = SHELL::OS::quote(offer.repository);
-  return String(STORE::PROBE) + repository + STORE::HEAD + QUIET + " && (" +
-         STORE::GET::clone(offer.repository, STORE::GET::staging(offer)) + ")" +
-         QUIET + "; echo \"" + DONE + " $?\"";
+  return STORE::GET::probe(offer) + " && (" +
+         STORE::GET::clone(offer, STORE::GET::staging(offer)) + ")" + QUIET +
+         "; echo \"" + DONE + " $?\"";
 }
 
 void open(Whole row) {
@@ -39,14 +39,18 @@ void open(Whole row) {
     return;
   }
   at = row;
+  tip.clear();
   SHELL::OS::PROCESS::feed(shell, command(LAUNCHER::STORE::offers[row]));
 }
 
 auto code() -> Whole {
   const String head = String(DONE) + " ";
-  for (const String &line : SHELL::OS::PROCESS::harvest(shell))
+  for (const String &line : SHELL::OS::PROCESS::harvest(shell)) {
     if (line.starts_with(head))
       return STRING::number<Whole>(line.substr(head.size()));
+    if (line.find(STORE::REF) != String::npos)
+      tip = line.substr(0, line.find(' '));
+  }
   return ISLANDS::SELECT::NONE;
 }
 
@@ -61,6 +65,7 @@ void close(Whole status) {
     return;
   }
   offer.state.clear();
+  offer.tip = tip;
   LAUNCHER::STORE::verify(offer);
   LAUNCHER::STORE::claim();
 }

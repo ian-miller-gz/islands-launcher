@@ -42,6 +42,7 @@ static void write(Whole box, const LAUNCHER::Control &control) {
 
 void LAUNCHER::SETUP::refresh() {
   if (!GET::setting()) return;
+  LINE::options();
   const Whole at = GET::picked();
   GUI::set(
     document, IDS::TITLED,

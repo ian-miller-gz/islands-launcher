@@ -33,7 +33,7 @@ auto fetched(const Offer &offer, String &report) -> Flag {
     return true;
   }
   NETWORK::WEB::Result answer =
-    NETWORK::WEB::get(address(offer.repository, LAUNCHER::LINE::followed));
+    NETWORK::WEB::get(address(offer.repository, STORE::GET::branch(offer)));
   if (!answer.ok || answer.status != STORE::SERVED)
     answer = NETWORK::WEB::get(address(offer.repository, STORE::REVISION));
   report = answer.body;
@@ -51,10 +51,10 @@ auto LAUNCHER::STORE::report(Offer &offer) -> Flag {
   offer.state.clear();
 #if SR_PLATFORM != SR_WINDOWS
   std::error_code reached;
-  if (offer.linked)
+  if (GET::reached(offer))
     return fs::exists(fs::path(staging(offer)) / LAUNCHER::MANIFEST, reached);
 #endif
-  if (!fetched(offer, text)) {
+  if (GET::named(offer) || !fetched(offer, text)) {
     offer.state = UNREACHED;
     return false;
   }

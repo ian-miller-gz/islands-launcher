@@ -8,7 +8,7 @@ constexpr Whole DETAILED = 22;
 constexpr STRING::Hot COLUMNS[] = {
   LAUNCHER::IDS::CALLED,  LAUNCHER::IDS::VERSION,  LAUNCHER::IDS::DETAIL,
   LAUNCHER::IDS::INSTALL, LAUNCHER::IDS::STANDING, LAUNCHER::IDS::PROGRESS,
-  LAUNCHER::IDS::UPDATE};
+  LAUNCHER::IDS::UPDATE,  LAUNCHER::IDS::RLINE,    LAUNCHER::IDS::RADD};
 
 void show(Whole at, Flag standing) {
   for (STRING::Hot column : COLUMNS)
@@ -78,10 +78,14 @@ void LAUNCHER::STORE::refresh() {
   for (Offer &offer : offers) offer.held = held(offer);
   if (showing != IDS::OFFERS) return;
   GUI::set(document, IDS::LINKED, GUI::Text{String(noted)});
+  GUI::set(
+    document, IDS::SLINE,
+    GUI::Text{LINE::GET::word(IDS::SLINE, LINE::followed)});
   for (Whole at = 0; at < ROWS; at += 1) {
     show(at, at < offers.size());
     if (at >= offers.size()) continue;
     installed(offers[at]);
     write(at, offers[at]);
   }
+  LINE::rows();
 }

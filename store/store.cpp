@@ -12,9 +12,6 @@ namespace LAUNCHER::STORE {
 namespace {
 constexpr Char SEPARATOR = '/';
 constexpr STRING::Hot SEPARATORS = "/:";
-constexpr STRING::Hot SWEEP = "rm -rf ";
-constexpr STRING::Hot CLONE = "git clone --depth 1 ";
-constexpr STRING::Hot LINED = " --branch ";
 
 auto listed(const String &repository) -> Flag {
   namespace GET = LAUNCHER::STORE::GET;
@@ -81,13 +78,4 @@ void LAUNCHER::STORE::installed(Offer &offer) {
   offer.installed =
     !manifest.entry.empty() &&
     fs::exists(CARTRIDGE::MANIFEST::entry(home, manifest), slip);
-}
-
-auto LAUNCHER::STORE::GET::clone(const String &repository, const String &home)
-  -> String {
-  const String from = SHELL::OS::quote(repository);
-  const String to = SHELL::OS::quote(home);
-  return String(SWEEP) + to + " && (" + CLONE + LINED + LINE::followed + " " +
-         from + " " + to + " || (" + SWEEP + to + " && " + CLONE + from + " " +
-         to + "))";
 }

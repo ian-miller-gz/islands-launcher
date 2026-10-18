@@ -13,15 +13,22 @@ using LAUNCHER::STORE::Offer;
 namespace LAUNCHER::LINE {
 namespace {
 constexpr STRING::Hot GIT = "git -C ";
-constexpr STRING::Hot FETCH = " fetch --depth 1 origin ";
+constexpr STRING::Hot FETCH = " fetch --depth 1 ";
+constexpr STRING::Hot ORIGIN = "origin";
 constexpr STRING::Hot CHECKOUT = " checkout -q -B ";
 constexpr STRING::Hot TIP = " FETCH_HEAD";
 constexpr STRING::Hot BUILD = "bash cartridges/build.sh ";
 
 auto fetching(const Offer &offer) -> String {
+  namespace LINE = LAUNCHER::LINE;
+  const SOURCES::Source *source =
+    SOURCES::GET::source(LINE::LAUNCHER, LINE::followed);
+  const String from =
+    source != nullptr ? SHELL::OS::quote(source->repository) : String(ORIGIN);
   const String seat = SHELL::OS::quote(offer.repository);
-  return String(GIT) + seat + FETCH + LAUNCHER::LINE::followed + " && " + GIT +
-         seat + CHECKOUT + LAUNCHER::LINE::followed + TIP;
+  const String branch = SHELL::OS::quote(LINE::followed);
+  return String(GIT) + seat + FETCH + from + " " + branch + " && " + GIT +
+         seat + CHECKOUT + branch + TIP;
 }
 
 auto building(const Offer &offer) -> String {

@@ -2,6 +2,6 @@
 #include "../cartridge.hpp"
 
 void LAUNCHER::commit(const String &id) {
-  if (id != IDS::LINK) return;
-  STORE::link();
+  if (id == IDS::LINK) return STORE::link();
+  if (id == IDS::SOURCE::ORIGIN) return SOURCES::CARD::find();
 }
