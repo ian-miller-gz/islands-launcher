@@ -4,9 +4,9 @@ requires: cartridges/.core/launcher/monitor acquire: start close: kill
 splash: true
 size: 1280x800
 assets: assets
-version: 3
+version: 4
 islands: 0.4
-release: 0.2.8
+release: 0.2.9
 summary: islands launcher
 web: https to raw.githubusercontent.com
 web: https to github.com
