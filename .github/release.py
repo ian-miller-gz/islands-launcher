@@ -1,4 +1,5 @@
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -129,7 +130,12 @@ def pinned(head):
   sha = pin(head)
   if sha is None:
     return None
-  git('submodule', 'update', '--init', '--', TOOL)
+  reach = subprocess.run(['git', 'submodule', 'update', '--init', '--', TOOL],
+                         capture_output=True, text=True)
+  if reach.returncode:
+    why = (reach.stderr.strip().splitlines() or ['no reason given'])[-1]
+    print(f'tools pin {sha[:8]} unverified: {TOOL} unreachable ({why})', file=sys.stderr)
+    return None
   git('fetch', '--tags', '--quiet', 'origin', cwd=TOOL)
   return tagged(sha, cwd=TOOL)
 
@@ -205,6 +211,13 @@ def clean(paths):
   return [f'{path} present' for path in sorted(hits)]
 
 
+def scrubbed(head):
+  if os.environ.get('RELEASE_PRIVATE') == 'true':
+    print('private repository: the clean-tree rule is the public export\'s', file=sys.stderr)
+    return []
+  return clean(tree(head))
+
+
 def linear(commits):
   return [f'merge commit {commit}' for commit in commits]
 
@@ -239,12 +252,12 @@ def check_line(line, before, head, now):
     problems = check_stable(before, head, now)
   else:
     problems = check_latest(before, head)
-  problems += clean(tree(head)) + linear(merges(before, head))
+  problems += scrubbed(head) + linear(merges(before, head))
   return problems + tools(config(head), pinned(head))
 
 
 def check_tag(label, head):
-  return named(label, version(head)) + clean(tree(head)) + tools(config(head), pinned(head))
+  return named(label, version(head)) + scrubbed(head) + tools(config(head), pinned(head))
 
 
 def line(label):
@@ -297,7 +310,7 @@ def check_branch(label, head):
   return []
 
 
-def notes(label, head):
+def notes(label, head, bypass=None):
   text = config(head)
   rows = [(kind(text), name(version(head)), head)]
   for line in git('ls-tree', head).splitlines():
@@ -306,7 +319,32 @@ def notes(label, head):
       rows.append((path.split('/')[-1], required(text) if path == TOOL else '', sha))
   body = ['| component | release | commit |', '|---|---|---|']
   body += [f'| {component} | {release} | {sha} |' for component, release, sha in rows]
+  if bypass:
+    body += ['', f'The release rules were waived by {os.environ.get("GITHUB_ACTOR", "the owner")}: {bypass}']
   return '\n'.join(body) + '\n'
+
+
+def report(kind, label, head, problems, bypass):
+  verdict = 'ok' if not problems else 'bypassed' if bypass else 'refused'
+  actions = os.environ.get('GITHUB_ACTIONS') == 'true'
+  for problem in problems:
+    print(f'::{"warning" if bypass else "error"}::{problem}' if actions else problem,
+          file=sys.stdout if actions else sys.stderr)
+  if actions:
+    print(f'::notice::{kind} {label}: {verdict}')
+  summary = os.environ.get('GITHUB_STEP_SUMMARY')
+  if summary:
+    try:
+      states = stated(config(head)) or 'no number'
+    except SystemExit as absent:
+      states = str(absent)
+    with open(summary, 'a') as out:
+      out.write(f'### gate: {kind} {label} — {verdict}\n\n')
+      out.write(f'- head `{head[:8]}` states `{states}`\n')
+      out.writelines(f'- {problem}\n' for problem in problems)
+      if bypass:
+        out.write(f'- waived by {os.environ.get("GITHUB_ACTOR", "the owner")}: {bypass}\n')
+  print(f'{kind} {label}: {verdict}')
 
 
 def main(argv):
@@ -315,9 +353,11 @@ def main(argv):
   parser.add_argument('name')
   parser.add_argument('head')
   parser.add_argument('--before', default=NONE)
+  parser.add_argument('--bypass', default=None, metavar='REASON',
+                      help='waive the rules: refusals stand as warnings, the verdict is bypassed')
   options = parser.parse_args(argv)
   if options.kind == 'notes':
-    sys.stdout.write(notes(options.name, options.head))
+    sys.stdout.write(notes(options.name, options.head, options.bypass))
     return 0
   if options.kind == 'line':
     problems = check_line(options.name, options.before, options.head, int(time.time()))
@@ -327,10 +367,8 @@ def main(argv):
     problems = check_tag(options.name, options.head)
   else:
     problems = check_branch(options.name, options.head)
-  for problem in problems:
-    print(problem, file=sys.stderr)
-  print(f'{options.kind} {options.name}: {"refused" if problems else "ok"}')
-  return 1 if problems else 0
+  report(options.kind, options.name, options.head, problems, options.bypass)
+  return 1 if problems and not options.bypass else 0
 
 
 if __name__ == '__main__':
