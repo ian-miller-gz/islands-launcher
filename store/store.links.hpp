@@ -6,9 +6,4 @@ constexpr STRING::Hot EMPTY = "empty";
 constexpr STRING::Hot LISTED = "listed";
 constexpr STRING::Hot FULL = "full";
 constexpr STRING::Hot ADDED = "added";
-
-inline STRING::Hot noted = "";
-
-void ask();
-void drop();
 }  // namespace LAUNCHER::STORE

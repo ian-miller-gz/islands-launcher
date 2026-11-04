@@ -3,6 +3,7 @@
 
 namespace LAUNCHER::STORE {
 constexpr STRING::Hot REF = "refs/heads/";
+constexpr STRING::Hot HEAD = " HEAD";
 constexpr STRING::Hot QUIET = " >/dev/null 2>&1";
 constexpr STRING::Hot MUTE = " 2>/dev/null";
 constexpr STRING::Hot PROMPTLESS = "GIT_TERMINAL_PROMPT=0 ";

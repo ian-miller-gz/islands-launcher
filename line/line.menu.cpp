@@ -6,7 +6,7 @@ namespace {
 constexpr Float PITCH = 34;
 constexpr Float RIM = 4;
 constexpr STRING::Hot CARDS[] = {
-  LAUNCHER::IDS::SLINES, LAUNCHER::IDS::RLINES, LAUNCHER::IDS::PLINES};
+  LAUNCHER::IDS::RELEASE::CARD, LAUNCHER::IDS::RLINES, LAUNCHER::IDS::PLINES};
 }  // namespace
 }  // namespace LAUNCHER::LINE
 
@@ -25,8 +25,8 @@ void LAUNCHER::LINE::unfold(STRING::Hot card, STRING::Hot door) {
 }
 
 void LAUNCHER::LINE::unfold(STRING::Hot door) {
-  dress(IDS::SLINES, IDS::sline, GET::lines(LAUNCHER));
-  unfold(IDS::SLINES, door);
+  dress(IDS::RELEASE::CARD, IDS::RELEASE::entry, GET::lines(LAUNCHER));
+  unfold(IDS::RELEASE::CARD, door);
 }
 
 void LAUNCHER::LINE::dress(
@@ -44,7 +44,7 @@ void LAUNCHER::LINE::dress(
 }
 
 void LAUNCHER::LINE::pick(Whole at) {
-  const String door = GUI::GET::seat(document, IDS::SLINES).beside;
+  const String door = GUI::GET::seat(document, IDS::RELEASE::CARD).beside;
   fold();
   const Vector<String> words = GET::lines(LAUNCHER);
   if (at >= words.size() || STORE::GET::running()) return;

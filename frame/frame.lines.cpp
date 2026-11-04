@@ -10,13 +10,14 @@ struct Click {
 
 constexpr Click CLICKS[] = {
   {LAUNCHER::IDS::LINE, [] { unfold(LAUNCHER::IDS::LINE); }},
-  {LAUNCHER::IDS::SLINE, [] { unfold(LAUNCHER::IDS::SLINE); }},
   {LAUNCHER::IDS::PLINE,
    [] { unfold(LAUNCHER::IDS::PLINES, LAUNCHER::IDS::PLINE); }},
   {LAUNCHER::IDS::SOURCES,
-   [] { LAUNCHER::SOURCES::CARD::ask(LAUNCHER::GET::leaf()); }},
-  {LAUNCHER::IDS::SADD,
-   [] { LAUNCHER::SOURCES::CARD::ask(LAUNCHER::LINE::LAUNCHER); }},
+   [] {
+     namespace SOURCES = LAUNCHER::SOURCES;
+     SOURCES::CARD::ask();
+     SOURCES::CARD::seat(SOURCES::GET::listed(LAUNCHER::GET::leaf()));
+   }},
   {LAUNCHER::IDS::SETTLE,
    [] {
      GUI::set(LAUNCHER::document, LAUNCHER::IDS::SETUP, GUI::Visibility{false});
@@ -27,11 +28,6 @@ constexpr Click CLICKS[] = {
   {LAUNCHER::IDS::SOURCE::ADD, LAUNCHER::SOURCES::CARD::add},
   {LAUNCHER::IDS::SOURCE::DROP, LAUNCHER::SOURCES::CARD::remove},
   {LAUNCHER::IDS::SOURCE::CLOSE, LAUNCHER::SOURCES::CARD::drop}};
-
-void add(Whole row) {
-  const auto &offers = LAUNCHER::STORE::offers;
-  if (row < offers.size()) LAUNCHER::SOURCES::CARD::ask(offers[row].leaf);
-}
 
 auto bank(
   const String &id, auto (*name)(Whole)->String, Whole count,
@@ -52,10 +48,9 @@ auto LAUNCHER::LINE::click(const String &id) -> Flag {
     click.run();
     return true;
   }
-  return bank(id, IDS::sline, ENTRIES, pick) ||
+  return bank(id, IDS::RELEASE::entry, ENTRIES, pick) ||
          bank(id, IDS::pline, ENTRIES, choose) ||
          bank(id, IDS::rline, STORE::ROWS, unfold) ||
-         bank(id, IDS::radd, STORE::ROWS, add) ||
          bank(id, IDS::rentry, ENTRIES, take) ||
          bank(
            id, IDS::SOURCE::row, GUI::GET::window(document, IDS::SOURCE::FOUND),

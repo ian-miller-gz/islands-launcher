@@ -22,6 +22,8 @@ constexpr STRING::Hot BARE = "bare";
 constexpr STRING::Hot QUIET = "quiet";
 constexpr STRING::Hot LAUNCH = "launch";
 constexpr STRING::Hot PUPDATE = "pupdate";
+constexpr STRING::Hot PPROGRESS = "pprogress";
+constexpr STRING::Hot PSTATE = "pstate";
 constexpr STRING::Hot GEAR = "gear";
 constexpr STRING::Hot SETUP = "setup";
 constexpr STRING::Hot SETTLE = "setupclose";
@@ -36,15 +38,9 @@ constexpr STRING::Hot CREW = "crew";
 constexpr STRING::Hot LINES = "lines";
 constexpr STRING::Hot LINE = "line";
 constexpr STRING::Hot LINESTATE = "linestate";
-constexpr STRING::Hot SLINE = "sline";
-constexpr STRING::Hot SLINES = "slines";
-inline auto sline(Whole at) -> String { return SLINE + std::to_string(at); }
-constexpr STRING::Hot SADD = "sadd";
 constexpr STRING::Hot RLINE = "rline";
-constexpr STRING::Hot RADD = "radd";
 constexpr STRING::Hot RLINES = "rlines";
 inline auto rline(Whole at) -> String { return RLINE + std::to_string(at); }
-inline auto radd(Whole at) -> String { return RADD + std::to_string(at); }
 inline auto rentry(Whole at) -> String { return "rentry" + std::to_string(at); }
 constexpr STRING::Hot CAPTION = "setupline";
 constexpr STRING::Hot PLINE = "pline";
@@ -66,13 +62,7 @@ constexpr STRING::Hot INSTALL = "install";
 constexpr STRING::Hot UPDATE = "update";
 constexpr STRING::Hot STANDING = "state";
 constexpr STRING::Hot PROGRESS = "progress";
-constexpr STRING::Hot LINK = "link";
 constexpr STRING::Hot JOIN = "linkadd";
-constexpr STRING::Hot CARD = "linkcard";
-constexpr STRING::Hot KEEP = "linkkeep";
-constexpr STRING::Hot LEAVE = "linkclose";
-constexpr STRING::Hot NOTED = "linknote";
-constexpr STRING::Hot LINKED = "linkstate";
 inline auto cell(STRING::Hot column, Whole at) -> String {
   return String(column) + std::to_string(at);
 }
@@ -92,3 +82,10 @@ constexpr STRING::Hot DROP = "sourcedrop";
 constexpr STRING::Hot ADD = "sourceadd";
 constexpr STRING::Hot CLOSE = "sourceclose";
 }  // namespace LAUNCHER::IDS::SOURCE
+
+namespace LAUNCHER::IDS::RELEASE {
+constexpr STRING::Hot CARD = "releasecard";
+inline auto entry(Whole at) -> String {
+  return "releaseentry" + std::to_string(at);
+}
+}  // namespace LAUNCHER::IDS::RELEASE

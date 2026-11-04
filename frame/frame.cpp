@@ -34,12 +34,7 @@ static const Click CLICKS[] = {
      GUI::set(
        LAUNCHER::document, LAUNCHER::IDS::NOTICE, GUI::Visibility{false});
    }},
-  {LAUNCHER::IDS::ABOUT,
-   [] {
-     GUI::set(
-       LAUNCHER::document, LAUNCHER::IDS::NOTICE,
-       GUI::Visibility{!LAUNCHER::GET::noticing()});
-   }},
+  {LAUNCHER::IDS::ABOUT, LAUNCHER::about},
   {LAUNCHER::IDS::LAUNCH, [] { LAUNCHER::start(); }},
   {LAUNCHER::IDS::GEAR,
    [] {
@@ -47,9 +42,7 @@ static const Click CLICKS[] = {
        LAUNCHER::document, LAUNCHER::IDS::SETUP,
        GUI::Visibility{!LAUNCHER::GET::setting()});
    }},
-  {LAUNCHER::IDS::JOIN, [] { LAUNCHER::STORE::ask(); }},
-  {LAUNCHER::IDS::KEEP, [] { LAUNCHER::STORE::link(); }},
-  {LAUNCHER::IDS::LEAVE, [] { LAUNCHER::STORE::drop(); }},
+  {LAUNCHER::IDS::JOIN, LAUNCHER::SOURCES::CARD::ask},
   {LAUNCHER::IDS::PUPDATE, [] { LAUNCHER::UPDATE::run(); }}};
 
 static void act(const String &id) {

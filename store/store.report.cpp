@@ -13,6 +13,13 @@ using LAUNCHER::STORE::Offer;
 namespace LAUNCHER::STORE {
 namespace {
 constexpr STRING::Hot CATEGORY = "~/launcher/store";
+constexpr STRING::Hot RELEASED = "release";
+constexpr STRING::Hot ISLANDS = "islands";
+
+auto row(const CARTRIDGE::Manifest &manifest, STRING::Hot key) -> String {
+  const auto found = manifest.keys.find(key);
+  return found != manifest.keys.end() ? found->second : String();
+}
 
 auto address(const String &repository, const String &revision) -> String {
   namespace STORE = LAUNCHER::STORE;
@@ -79,10 +86,10 @@ auto LAUNCHER::STORE::verify(Offer &offer) -> Flag {
     offer.state = REFUSED;
     return false;
   }
-  const auto found = manifest.keys.find(RELEASED);
   offer.name = manifest.name;
   offer.entry = manifest.entry;
-  offer.release = found != manifest.keys.end() ? found->second : String();
+  offer.release = row(manifest, RELEASED);
+  offer.engine = row(manifest, ISLANDS);
   return true;
 }
 

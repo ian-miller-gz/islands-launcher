@@ -1,6 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <algorithm>
-
 #include "../cartridge.hpp"
 
 using LAUNCHER::SOURCES::Source;
@@ -16,15 +14,6 @@ auto row(const Source &source) -> String {
   return LAUNCHER::GET::plain(source.branch) + GAP +
          LAUNCHER::GET::shortened(source.repository, SPAN) + GAP +
          (source.local ? SOURCES::LOCAL : SOURCES::REMOTE);
-}
-
-void title(const String &leaf) {
-  String name = leaf;
-  for (const LAUNCHER::STORE::Offer &offer : LAUNCHER::STORE::offers)
-    if (offer.leaf == leaf && !offer.name.empty()) name = offer.name;
-  GUI::set(
-    LAUNCHER::document, LAUNCHER::IDS::SOURCE::TITLE,
-    GUI::Text{LAUNCHER::GET::plain(name) + " " + LAUNCHER::SOURCES::TITLE});
 }
 
 void fill(STRING::Hot list, const Vector<String> &texts) {
@@ -53,11 +42,11 @@ void branches() {
   for (Whole at = 0; at < window && first + at < SOURCES::found.size();
        at += 1) {
     const String &name = SOURCES::found[first + at];
-    const Flag marked =
-      std::ranges::find(SOURCES::marks, name) != SOURCES::marks.end();
     GUI::set(
       LAUNCHER::document, SOURCE::row(at).c_str(),
-      GUI::Style{marked ? LAUNCHER::STYLES::SELECTED : LAUNCHER::STYLES::POST});
+      GUI::Style{
+        name == SOURCES::marked ? LAUNCHER::STYLES::SELECTED
+                                : LAUNCHER::STYLES::POST});
   }
 }
 }  // namespace
@@ -65,8 +54,8 @@ void branches() {
 
 void LAUNCHER::SOURCES::CARD::refresh() {
   if (!GUI::GET::visibility(document, IDS::SOURCE::CARD)) return;
-  if (leaf.empty()) return drop();
-  title(leaf);
+  leaf = draft().leaf;
+  GUI::set(document, IDS::SOURCE::TITLE, GUI::Text{String(TITLE)});
   list(leaf);
   branches();
   GUI::set(

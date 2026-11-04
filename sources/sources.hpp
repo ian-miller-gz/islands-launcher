@@ -22,7 +22,7 @@ constexpr STRING::Hot NONE = "none";
 constexpr STRING::Hot UNREACHED = "unreached";
 constexpr STRING::Hot LOCAL = "local";
 constexpr STRING::Hot REMOTE = "remote";
-constexpr STRING::Hot TITLE = "Sources";
+constexpr STRING::Hot TITLE = "Add cartridge";
 
 namespace KEYS {
 constexpr STRING::Hot LEAF = "leaf";
@@ -35,7 +35,7 @@ inline Vector<Source> sources;
 inline String noted;
 inline Source sought;
 inline Vector<String> found;
-inline Vector<String> marks;
+inline String marked;
 
 void read();
 void write();
@@ -47,10 +47,12 @@ void poll();
 namespace CARD {
 inline Flag local = false;
 inline String leaf;
-void ask(const String &leaf);
+void ask();
+void seat(const String &text);
+auto draft() -> Source;
 void drop();
 void find();
-void mark(Whole seat);
+void mark(Whole row);
 void add();
 void remove();
 void flip();

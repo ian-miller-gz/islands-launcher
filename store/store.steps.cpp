@@ -50,7 +50,7 @@ auto checked(Offer &offer) -> Flag {
   const CARTRIDGE::Manifest manifest = CARTRIDGE::MANIFEST::read(home);
   std::error_code slip;
   return manifest.name == offer.name && manifest.entry == offer.entry &&
-         manifest.version == CARTRIDGE::VERSION &&
+         manifest.version == CARTRIDGE::VERSION && fitted(offer) &&
          fs::exists(fs::path(home) / SOURCE, slip) && delivered(home, manifest);
 }
 

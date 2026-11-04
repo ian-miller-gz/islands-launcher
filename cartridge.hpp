@@ -59,6 +59,7 @@ inline Vector<Control> controls;
 
 void scan();
 void notice();
+void about();
 void identify(Entry &entry);
 void tick(Whole box);
 auto list(const String &directory, Whole depth) -> Vector<Entry>;

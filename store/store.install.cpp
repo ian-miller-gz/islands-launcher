@@ -3,10 +3,6 @@
 
 #include "../cartridge.hpp"
 
-namespace STORE = LAUNCHER::STORE;
-using LAUNCHER::STORE::Offer;
-using LAUNCHER::STORE::Step;
-
 namespace LAUNCHER::STORE {
 namespace {
 constexpr STRING::Hot CATEGORY = "~/launcher/store";
@@ -30,11 +26,13 @@ void rest() {
   walk = nullptr;
 }
 
-void sank(Offer &offer, STRING::Hot word, Whole code) {
-  offer.state = String(STORE::FAILED) + " " + word + " " + std::to_string(code);
+void sank(Offer &offer, STRING::Hot step, Whole code) {
+  if (opened && offer.state != step) lines.insert(lines.begin(), offer.state);
+  offer.state = String(STORE::FAILED) + " " + step + " " + std::to_string(code);
   LOGGER::Category &logger = LOGGER::get(CATEGORY);
   logger.error("%s: %s", offer.leaf.c_str(), offer.state.c_str());
   for (const String &line : lines) logger.error("  %s", line.c_str());
+  STORE::fail(offer, step, lines);
   rest();
 }
 
@@ -68,6 +66,7 @@ void LAUNCHER::STORE::run(Offer &offer, const Vector<Step> &steps) {
   if (subject != nullptr || steps.empty()) return;
   SHELL::OS::PROCESS::spawn(shell);
   if (!SHELL::OS::PROCESS::running(shell)) return;
+  offer.failure.clear();
   subject = &offer;
   walk = &steps;
   at = 0;

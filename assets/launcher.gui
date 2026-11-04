@@ -52,7 +52,7 @@ panel shell style=clear anchor=stretch
       panel rule9 style=line x=0 y=0 w=1 h=0 visible=false
       panel rule10 style=line x=0 y=0 w=1 h=0 visible=false
       panel rule11 style=line x=0 y=0 w=1 h=0 visible=false
-      button preview style=card anchor=northeast x=-16 y=16 w=440 h=420 z=1
+      button preview style=card anchor=northeast x=-16 y=16 w=440 h=420 z=1 clip=true
         label pname style=ink size=22 text="" x=20 y=16
         label pfact0 style=muted size=16 x=20 y=54
         label pfact1 style=muted size=16 x=20 y=76
@@ -60,6 +60,8 @@ panel shell style=clear anchor=stretch
         label psummary style=ink size=17 wrap=40 x=20 y=130
         button launch style=call size=20 text="Launch" anchor=southwest x=20 y=-20 w=180 h=48 z=2
         button pupdate style=call size=17 text="Update" anchor=southwest x=212 y=-20 w=96 h=48 z=2 visible=false
+        bar pprogress style=gauge anchor=southwest x=20 y=-84 w=400 h=4 fraction=0 visible=false
+        label pstate style=muted size=16 text="" anchor=southwest x=20 y=-96 visible=false
         button gear style=place size=18 text="Options" anchor=southwest x=320 y=-20 w=100 h=48 z=2
       button watch style=card anchor=southeast x=-16 y=-16 w=440 h=272 z=1
         label watching style=muted size=17 text="Running" x=20 y=16
@@ -108,9 +110,6 @@ panel shell style=clear anchor=stretch
   panel offers style=sheet anchor=stretch x=304 y=40 w=16 h=16 visible=false
     panel offerbox style=box anchor=stretch x=0 y=0 w=0 h=0
       button linkadd style=place size=17 text="Add" x=16 y=20 w=120 h=28
-      label linkstate style=muted size=17 x=152 y=26
-      button sline style=place size=17 x=964 y=20 w=120 h=28
-      button sadd style=place size=17 text="+" x=1092 y=20 w=28 h=28
       label name0 style=ink size=17 x=16 y=64 visible=false
       label release0 style=ink size=17 x=260 y=64 visible=false
       label description0 style=muted size=17 x=380 y=64 visible=false
@@ -118,7 +117,6 @@ panel shell style=clear anchor=stretch
       button install0 style=place size=17 text="Install" x=756 y=59 w=96 h=28 visible=false
       button update0 style=call size=17 text="Update" x=860 y=59 w=96 h=28 visible=false
       button rline0 style=place size=17 x=964 y=59 w=120 h=28 visible=false
-      button radd0 style=place size=17 text="+" x=1092 y=59 w=28 h=28 visible=false
       bar progress0 style=gauge x=620 y=90 w=232 h=4 fraction=0 visible=false
       label name1 style=ink size=17 x=16 y=108 visible=false
       label release1 style=ink size=17 x=260 y=108 visible=false
@@ -127,7 +125,6 @@ panel shell style=clear anchor=stretch
       button install1 style=place size=17 text="Install" x=756 y=103 w=96 h=28 visible=false
       button update1 style=call size=17 text="Update" x=860 y=103 w=96 h=28 visible=false
       button rline1 style=place size=17 x=964 y=103 w=120 h=28 visible=false
-      button radd1 style=place size=17 text="+" x=1092 y=103 w=28 h=28 visible=false
       bar progress1 style=gauge x=620 y=134 w=232 h=4 fraction=0 visible=false
       label name2 style=ink size=17 x=16 y=152 visible=false
       label release2 style=ink size=17 x=260 y=152 visible=false
@@ -136,7 +133,6 @@ panel shell style=clear anchor=stretch
       button install2 style=place size=17 text="Install" x=756 y=147 w=96 h=28 visible=false
       button update2 style=call size=17 text="Update" x=860 y=147 w=96 h=28 visible=false
       button rline2 style=place size=17 x=964 y=147 w=120 h=28 visible=false
-      button radd2 style=place size=17 text="+" x=1092 y=147 w=28 h=28 visible=false
       bar progress2 style=gauge x=620 y=178 w=232 h=4 fraction=0 visible=false
       label name3 style=ink size=17 x=16 y=196 visible=false
       label release3 style=ink size=17 x=260 y=196 visible=false
@@ -145,7 +141,6 @@ panel shell style=clear anchor=stretch
       button install3 style=place size=17 text="Install" x=756 y=191 w=96 h=28 visible=false
       button update3 style=call size=17 text="Update" x=860 y=191 w=96 h=28 visible=false
       button rline3 style=place size=17 x=964 y=191 w=120 h=28 visible=false
-      button radd3 style=place size=17 text="+" x=1092 y=191 w=28 h=28 visible=false
       bar progress3 style=gauge x=620 y=222 w=232 h=4 fraction=0 visible=false
       label name4 style=ink size=17 x=16 y=240 visible=false
       label release4 style=ink size=17 x=260 y=240 visible=false
@@ -154,7 +149,6 @@ panel shell style=clear anchor=stretch
       button install4 style=place size=17 text="Install" x=756 y=235 w=96 h=28 visible=false
       button update4 style=call size=17 text="Update" x=860 y=235 w=96 h=28 visible=false
       button rline4 style=place size=17 x=964 y=235 w=120 h=28 visible=false
-      button radd4 style=place size=17 text="+" x=1092 y=235 w=28 h=28 visible=false
       bar progress4 style=gauge x=620 y=266 w=232 h=4 fraction=0 visible=false
       label name5 style=ink size=17 x=16 y=284 visible=false
       label release5 style=ink size=17 x=260 y=284 visible=false
@@ -163,7 +157,6 @@ panel shell style=clear anchor=stretch
       button install5 style=place size=17 text="Install" x=756 y=279 w=96 h=28 visible=false
       button update5 style=call size=17 text="Update" x=860 y=279 w=96 h=28 visible=false
       button rline5 style=place size=17 x=964 y=279 w=120 h=28 visible=false
-      button radd5 style=place size=17 text="+" x=1092 y=279 w=28 h=28 visible=false
       bar progress5 style=gauge x=620 y=310 w=232 h=4 fraction=0 visible=false
       label name6 style=ink size=17 x=16 y=328 visible=false
       label release6 style=ink size=17 x=260 y=328 visible=false
@@ -172,7 +165,6 @@ panel shell style=clear anchor=stretch
       button install6 style=place size=17 text="Install" x=756 y=323 w=96 h=28 visible=false
       button update6 style=call size=17 text="Update" x=860 y=323 w=96 h=28 visible=false
       button rline6 style=place size=17 x=964 y=323 w=120 h=28 visible=false
-      button radd6 style=place size=17 text="+" x=1092 y=323 w=28 h=28 visible=false
       bar progress6 style=gauge x=620 y=354 w=232 h=4 fraction=0 visible=false
       label name7 style=ink size=17 x=16 y=372 visible=false
       label release7 style=ink size=17 x=260 y=372 visible=false
@@ -181,7 +173,6 @@ panel shell style=clear anchor=stretch
       button install7 style=place size=17 text="Install" x=756 y=367 w=96 h=28 visible=false
       button update7 style=call size=17 text="Update" x=860 y=367 w=96 h=28 visible=false
       button rline7 style=place size=17 x=964 y=367 w=120 h=28 visible=false
-      button radd7 style=place size=17 text="+" x=1092 y=367 w=28 h=28 visible=false
       bar progress7 style=gauge x=620 y=398 w=232 h=4 fraction=0 visible=false
       button rlines style=card x=0 y=0 w=120 h=72 z=8 visible=false
         button rentry0 style=entry size=17 text="stable" x=4 y=4 w=112 h=30
@@ -192,24 +183,17 @@ panel shell style=clear anchor=stretch
         button rentry5 style=entry size=17 x=4 y=174 w=112 h=30 visible=false
         button rentry6 style=entry size=17 x=4 y=208 w=112 h=30 visible=false
         button rentry7 style=entry size=17 x=4 y=242 w=112 h=30 visible=false
-    button linkcard style=card anchor=center w=620 h=212 z=8 visible=false
-      label linkname style=ink size=22 text="Repository" x=24 y=20
-      label linkword style=muted size=17 text="Add cartridge git HTTPS URL" x=24 y=62
-      field link style=note size=17 pad=6 x=24 y=94 w=572 h=28
-      label linknote style=muted size=17 x=24 y=138
-      button linkclose style=place size=18 text="Cancel" anchor=southeast x=-184 y=-24 w=150 h=34
-      button linkkeep style=call size=18 text="Add" anchor=southeast x=-24 y=-24 w=150 h=34
-  button slines style=card x=0 y=0 w=120 h=72 z=8 visible=false
-    button sline0 style=entry size=17 text="stable" x=4 y=4 w=112 h=30
-    button sline1 style=entry size=17 text="latest" x=4 y=38 w=112 h=30
-    button sline2 style=entry size=17 x=4 y=72 w=112 h=30 visible=false
-    button sline3 style=entry size=17 x=4 y=106 w=112 h=30 visible=false
-    button sline4 style=entry size=17 x=4 y=140 w=112 h=30 visible=false
-    button sline5 style=entry size=17 x=4 y=174 w=112 h=30 visible=false
-    button sline6 style=entry size=17 x=4 y=208 w=112 h=30 visible=false
-    button sline7 style=entry size=17 x=4 y=242 w=112 h=30 visible=false
+  button releasecard style=card x=0 y=0 w=120 h=72 z=8 visible=false
+    button releaseentry0 style=entry size=17 text="stable" x=4 y=4 w=112 h=30
+    button releaseentry1 style=entry size=17 text="latest" x=4 y=38 w=112 h=30
+    button releaseentry2 style=entry size=17 x=4 y=72 w=112 h=30 visible=false
+    button releaseentry3 style=entry size=17 x=4 y=106 w=112 h=30 visible=false
+    button releaseentry4 style=entry size=17 x=4 y=140 w=112 h=30 visible=false
+    button releaseentry5 style=entry size=17 x=4 y=174 w=112 h=30 visible=false
+    button releaseentry6 style=entry size=17 x=4 y=208 w=112 h=30 visible=false
+    button releaseentry7 style=entry size=17 x=4 y=242 w=112 h=30 visible=false
   button sourcecard style=card anchor=center w=680 h=420 z=10 visible=false
-    label sourcename style=ink size=22 text="Sources" x=24 y=20
+    label sourcename style=ink size=22 text="Add cartridge" x=24 y=20
     list sourcelist style=box x=24 y=56 w=632 h=120 pitch=24 pad=2 mark=selected plain=post
     label sourceword style=muted size=16 text="source" x=24 y=174
     field source style=paper size=17 pad=6 x=24 y=192 w=440 h=28
@@ -220,6 +204,6 @@ panel shell style=clear anchor=stretch
     button sourcedrop style=place size=18 text="Remove" anchor=southwest x=24 y=-24 w=120 h=34
     button sourceadd style=call size=18 text="Add" anchor=southeast x=-184 y=-24 w=150 h=34
     button sourceclose style=place size=18 text="Close" anchor=southeast x=-24 y=-24 w=150 h=34
-  button notice style=card anchor=center w=360 h=120 z=10 visible=false
-    label noticeline style=ink size=18 text="" x=24 y=24
+  button notice style=card anchor=center w=360 h=120 z=10 clip=true visible=false
+    label noticeline style=ink size=18 wrap=28 text="" x=24 y=24
     button noticeclose style=place size=18 text="Close" anchor=southeast x=-24 y=-24 w=150 h=34

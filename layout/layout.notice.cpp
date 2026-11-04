@@ -11,3 +11,8 @@ void LAUNCHER::notice() {
   GUI::set(
     document, IDS::NOTICELINE, GUI::Text{String(NOTICED) + ENGINE::VERSION});
 }
+
+void LAUNCHER::about() {
+  notice();
+  GUI::set(document, IDS::NOTICE, GUI::Visibility{!GET::noticing()});
+}
