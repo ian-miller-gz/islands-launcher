@@ -23,18 +23,18 @@ static void coat(const String &note) {
 
 static void write(Whole box, const LAUNCHER::Control &control) {
   constexpr STRING::Hot ON = "[x] ", OFF = "[ ] ";
-  const String word = LAUNCHER::IDS::word(box);
+  const String caption = LAUNCHER::IDS::caption(box);
   const String note = LAUNCHER::IDS::note(box);
   const Float seat = GUI::GET::position(LAUNCHER::document, note.c_str()).x;
   GUI::set(
-    LAUNCHER::document, word.c_str(),
+    LAUNCHER::document, caption.c_str(),
     GUI::Text{LAUNCHER::GET::shortened(
-      String(control.on ? ON : OFF) + control.label, ::columns(word, seat))});
+      String(control.on ? ON : OFF) + control.label, ::columns(caption, seat))});
   GUI::set(
     LAUNCHER::document, note.c_str(),
     GUI::Text{control.ready ? control.summary : "not built"});
   GUI::set(
-    LAUNCHER::document, word.c_str(),
+    LAUNCHER::document, caption.c_str(),
     GUI::Style{
       control.ready ? LAUNCHER::STYLES::INK : LAUNCHER::STYLES::STILL});
   ::coat(note);

@@ -14,7 +14,7 @@ void LAUNCHER::LINE::options() {
     GUI::set(document, id, GUI::Visibility{!leaf.empty()});
   if (leaf.empty()) GUI::set(document, IDS::PLINES, GUI::Visibility{false});
   GUI::set(
-    document, IDS::PLINE, GUI::Text{GET::word(IDS::PLINE, GET::line(leaf))});
+    document, IDS::PLINE, GUI::Text{GET::label(IDS::PLINE, GET::line(leaf))});
   dress(IDS::PLINES, IDS::pline, GET::lines(leaf));
 }
 

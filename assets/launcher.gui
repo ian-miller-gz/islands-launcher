@@ -207,3 +207,9 @@ panel shell style=clear anchor=stretch
   button notice style=card anchor=center w=360 h=120 z=10 clip=true visible=false
     label noticeline style=ink size=18 wrap=28 text="" x=24 y=24
     button noticeclose style=place size=18 text="Close" anchor=southeast x=-24 y=-24 w=150 h=34
+  button offer style=card anchor=center w=420 h=160 z=10 visible=false
+    label offerline style=ink size=18 text="" x=24 y=24
+    label offernote style=muted size=16 text="" x=24 y=56
+    button renew style=call size=18 text="Update" anchor=southwest x=24 y=-24 w=120 h=34
+    button later style=place size=18 text="Later" anchor=southwest x=156 y=-24 w=110 h=34
+    button skip style=place size=18 text="Skip" anchor=southeast x=-24 y=-24 w=110 h=34

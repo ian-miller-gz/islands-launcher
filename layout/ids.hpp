@@ -38,6 +38,12 @@ constexpr STRING::Hot CREW = "crew";
 constexpr STRING::Hot LINES = "lines";
 constexpr STRING::Hot LINE = "line";
 constexpr STRING::Hot LINESTATE = "linestate";
+constexpr STRING::Hot OFFER = "offer";
+constexpr STRING::Hot OFFERLINE = "offerline";
+constexpr STRING::Hot OFFERNOTE = "offernote";
+constexpr STRING::Hot RENEW = "renew";
+constexpr STRING::Hot LATER = "later";
+constexpr STRING::Hot SKIP = "skip";
 constexpr STRING::Hot RLINE = "rline";
 constexpr STRING::Hot RLINES = "rlines";
 inline auto rline(Whole at) -> String { return RLINE + std::to_string(at); }
@@ -50,7 +56,7 @@ constexpr STRING::Hot SOURCES = "sources";
 inline auto tick(Whole at) -> String { return "tick" + std::to_string(at); }
 inline auto rule(Whole at) -> String { return "rule" + std::to_string(at); }
 inline auto box(Whole at) -> String { return BOX + std::to_string(at); }
-inline auto word(Whole at) -> String { return "boxword" + std::to_string(at); }
+inline auto caption(Whole at) -> String { return "boxword" + std::to_string(at); }
 inline auto item(STRING::Hot list, Whole at) -> String {
   return String(list) + "." + std::to_string(at);
 }

@@ -8,7 +8,7 @@ void LAUNCHER::LINE::rows() {
     const String id = IDS::rline(at);
     GUI::set(
       document, id.c_str(),
-      GUI::Text{GET::word(id.c_str(), GET::line(offers[at].leaf))});
+      GUI::Text{GET::label(id.c_str(), GET::line(offers[at].leaf))});
   }
 }
 

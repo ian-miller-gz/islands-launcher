@@ -17,20 +17,22 @@ auto file() -> String {
 }  // namespace
 }  // namespace LAUNCHER::LINE
 
-auto LAUNCHER::LINE::GET::placed(const String &word) -> Whole {
+auto LAUNCHER::LINE::GET::placed(const String &name) -> Whole {
   for (Whole at = 0; at < std::size(LINES); at += 1)
-    if (word == LINES[at]) return at;
+    if (name == LINES[at]) return at;
   return ISLANDS::SELECT::NONE;
 }
 
 void LAUNCHER::LINE::read() {
   followed = STABLE;
+  skipped.clear();
   IO::STREAMS::Input in(file());
   String line, key, value;
   while (std::getline(in, line)) {
     const String text = LAUNCHER::GET::bare(line);
     if (!STRING::pair(text, key, value)) continue;
     if (key == KEY && SOURCES::GET::taken(LAUNCHER, value)) followed = value;
+    if (key == SKIPPED) skipped = value;
   }
   load();
 }
@@ -39,4 +41,5 @@ void LAUNCHER::LINE::write() {
   IO::STREAMS::Output out(file());
   if (!out) return;
   out << KEY << ": " << followed << "\n";
+  if (!skipped.empty()) out << SKIPPED << ": " << skipped << "\n";
 }

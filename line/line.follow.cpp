@@ -62,5 +62,6 @@ auto LAUNCHER::LINE::GET::steps() -> const Vector<STORE::Step> & {
 
 void LAUNCHER::LINE::follow() {
   offer = {.repository = SEAT, .leaf = SEAT};
+  if (GET::installed()) return STORE::run(offer, GET::checks());
   if (GET::cloned()) STORE::run(offer, GET::steps());
 }

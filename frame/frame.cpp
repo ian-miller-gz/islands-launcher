@@ -55,6 +55,7 @@ static void act(const String &id) {
     return LAUNCHER::STORE::call(at);
   if (::banked(id, LAUNCHER::IDS::UPDATE, at))
     return LAUNCHER::STORE::update(at);
+  if (LAUNCHER::LINE::answered(id)) return;
   for (const LAUNCHER::Scene &scene : LAUNCHER::SCENES)
     if (id == scene.call) return LAUNCHER::enter(scene.call);
   for (const LAUNCHER::Area &area : LAUNCHER::AREAS)

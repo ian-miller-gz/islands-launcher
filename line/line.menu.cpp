@@ -30,29 +30,29 @@ void LAUNCHER::LINE::unfold(STRING::Hot door) {
 }
 
 void LAUNCHER::LINE::dress(
-  STRING::Hot card, auto (*entry)(Whole)->String, const Vector<String> &words) {
+  STRING::Hot card, auto (*entry)(Whole)->String, const Vector<String> &names) {
   for (Whole at = 0; at < ENTRIES; at += 1) {
     const String id = entry(at);
-    const Flag shown = at < words.size();
+    const Flag shown = at < names.size();
     GUI::set(document, id.c_str(), GUI::Visibility{shown});
-    if (shown) GUI::set(document, id.c_str(), GUI::Text{words[at]});
+    if (shown) GUI::set(document, id.c_str(), GUI::Text{names[at]});
   }
   auto extent = GUI::GET::extent(document, card);
   extent.h =
-    RIM + PITCH * static_cast<Float>(std::min<Whole>(words.size(), ENTRIES));
+    RIM + PITCH * static_cast<Float>(std::min<Whole>(names.size(), ENTRIES));
   GUI::set(document, card, extent);
 }
 
 void LAUNCHER::LINE::pick(Whole at) {
   const String door = GUI::GET::seat(document, IDS::RELEASE::CARD).beside;
   fold();
-  const Vector<String> words = GET::lines(LAUNCHER);
-  if (at >= words.size() || STORE::GET::running()) return;
+  const Vector<String> names = GET::lines(LAUNCHER);
+  if (at >= names.size() || STORE::GET::running()) return;
   if (STORE::GET::reaching()) {
     refused = door;
     return;
   }
-  followed = words[at];
+  followed = names[at];
   write();
   STORE::resurvey();
   if (showing == IDS::OFFERS) STORE::survey();

@@ -27,13 +27,13 @@ auto LAUNCHER::LINE::GET::tip(const String &leaf) -> String {
 }
 
 auto LAUNCHER::LINE::GET::lines(const String &leaf) -> Vector<String> {
-  Vector<String> words(std::begin(LINES), std::end(LINES));
+  Vector<String> names(std::begin(LINES), std::end(LINES));
   for (const SOURCES::Source *source : SOURCES::GET::named(leaf))
-    words.push_back(source->branch);
-  return words;
+    names.push_back(source->branch);
+  return names;
 }
 
-auto LAUNCHER::LINE::GET::word(STRING::Hot door, const String &line) -> String {
+auto LAUNCHER::LINE::GET::label(STRING::Hot door, const String &line) -> String {
   if (refused != door || !STORE::GET::reaching()) return line;
   return STORE::REACHING;
 }

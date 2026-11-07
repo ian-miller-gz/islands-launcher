@@ -12,6 +12,7 @@ static auto initialize(STRING::Hot assets) -> Status {
   LAUNCHER::STORE::argued();
   LAUNCHER::notice();
   LAUNCHER::WATCH::attach();
+  LAUNCHER::LINE::check();
   return 0;
 }
 

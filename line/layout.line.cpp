@@ -4,6 +4,6 @@
 void LAUNCHER::LINE::refresh() {
   if (!STORE::GET::reaching()) refused.clear();
   if (showing != IDS::LINES) return;
-  GUI::set(document, IDS::LINE, GUI::Text{GET::word(IDS::LINE, followed)});
+  GUI::set(document, IDS::LINE, GUI::Text{GET::label(IDS::LINE, followed)});
   GUI::set(document, IDS::LINESTATE, GUI::Text{offer.state});
 }
